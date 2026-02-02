@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PF3 - Please & Money</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Special Elite', typewriter, serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* BACKGROUND: High Contrast B&W Desert */
+        .desert-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: 
+                linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,1)),
+                url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=2000');
+            background-size: cover;
+            background-position: center 75%;
+            filter: grayscale(100%) contrast(160%) brightness(25%);
+            z-index: -2;
+        }
+
+        .grain {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.2; pointer-events: none; z-index: 10;
+        }
+
+        /* TICKER: Perfect Seamless Loop */
+        .ticker-wrapper {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 0;
+            z-index: 50;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            animation: ticker 20s linear infinite; /* Velocidad ajustada para lectura fluida */
+            font-family: 'Courier Prime', monospace;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-50%, 0, 0); }
+        }
+
+        .ticker-content span { margin-right: 50px; }
+        .red { color: #ff4444; }
+        .green { color: #44ff44; }
+
+        /* DIGGING UI */
+        .ui-dig { text-align: center; z-index: 15; }
+        #dig-text { 
+            font-size: 5rem; letter-spacing: 20px; cursor: pointer;
+            transition: transform 0.1s; display: block;
+            text-shadow: 0 0 20px #fff;
+        }
+
+        .pit { width: 300px; height: 1px; background: #222; margin: 20px auto; overflow: hidden; }
+        #fill { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; }
+
+        /* STORY PAPER */
+        #story-paper {
+            position: fixed; width: 85%; max-width: 550px;
+            background: #b5a494; color: #111; padding: 45px;
+            box-shadow: 0 0 150px #000; opacity: 0; pointer-events: none;
+            z-index: 20; transition: opacity 0.8s;
+            transform: rotate(-0.5deg);
+            user-select: text; /* Permite leer el texto */
+        }
+
+        .verses { font-style: italic; margin: 25px 0; padding: 15px; border-left: 3px solid #111; font-size: 1rem; line-height: 1.6; }
+
+        /* VIDEO CONTAINER */
+        #video-container {
+            position: fixed; bottom: -120%; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 40; display: flex; justify-content: center; align-items: center;
+            transition: bottom 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        #video-container.up { bottom: 0; }
+
+        .player-wrapper { 
+            width: 85%; 
+            aspect-ratio: 16/9; background: #000; 
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* FX */
+        .flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; z-index: 100; pointer-events: none; }
+        .shaking { animation: shake 0.1s infinite; }
+        @keyframes shake { 0% { transform: translate(2px, 1px); } 50% { transform: translate(-2px, -1px); } }
+    </style>
+</head>
+<body id="stage">
+
+    <audio id="sfx-dig" src="https://www.soundjay.com/nature/sounds/sand-curdle-1.mp3" preload="auto"></audio>
+    <audio id="sfx-shot" src="https://www.soundjay.com/mechanical/sounds/gun-shot-1.mp3" preload="auto"></audio>
+
+    <div class="flash" id="flash"></div>
+    <div class="desert-bg"></div>
+    <div class="grain"></div>
+
+    <div class="ticker-wrapper" id="ticker">
+        <div class="ticker-content">
+            <span class="green">EL DOYEN: +12.4% ▲</span>
+            <span class="green">PHARMACOIN: +440% ▲▲▲</span>
+            <span class="red">SOUND_DESIGN_TEAM: -99.6% ▼</span>
+            <span class="red">PAGO_DIGNIDAD: RECHAZADO</span>
+            <span class="green">EGO_COIN: +99.6% ▲</span>
+            <span class="red">TRUST_INDEX: 0.00</span>
+            <span class="green">COBRO_BALA: COTIZANDO ▲</span>
+            <span>VALOR_PALABRA: -99.9% ▼</span>
+            <span class="green">EL DOYEN: +12.4% ▲</span>
+            <span class="green">PHARMACOIN: +440% ▲▲▲</span>
+            <span class="red">SOUND_DESIGN_TEAM: -99.6% ▼</span>
+            <span class="red">PAGO_DIGNIDAD: RECHAZADO</span>
+            <span class="green">EGO_COIN: +99.6% ▲</span>
+            <span class="red">TRUST_INDEX: 0.00</span>
+            <span class="green">COBRO_BALA: COTIZANDO ▲</span>
+            <span>VALOR_PALABRA: -99.9% ▼</span>
+        </div>
+    </div>
+
+    <div class="ui-dig" id="ui-init">
+        <h1 id="dig-text">CLICK TO DIG</h1>
+        <div class="pit"><div id="fill"></div></div>
+        <p style="font-size: 0.6rem; letter-spacing: 5px; opacity: 0.4;">SCRUB THE WORD TO UNCOVER</p>
+    </div>
+
+    <div id="story-paper">
+        <p><strong>Please and Money</strong> sat in the cold silence. Money was drifting, his soul numb from Pentothal. Please, after months of begging for his due, looked into the fire and whispered:</p>
+        <div class="verses">
+            "Future is a scam… we only have today. Chasing tomorrow leads us astray. Moments are fleeting, Hold what you can. Live loud, love hard, Forget the plan. No recipe secures the steps we must take. Every choice is a ripple, every risk is a quake. The clock won’t pause for fear or delay. So burn bright now… Don’t fade into grey."
+        </div>
+        <p>Money just laughed. A dry, expensive sound. "You're a poet, Please? I'm a businessman. And business is over."</p>
+        <p style="text-align:right; font-weight:bold; margin-top:10px;">HAHAHA!</p>
+        <p style="margin-top:40px; font-size: 0.7rem; text-align:center; opacity:0.6;">[ PULL THE TRIGGER ]</p>
+    </div>
+
+    <div id="video-container">
+        <div class="player-wrapper">
+            <iframe id="yt-video" src="https://www.youtube.com/embed/EokHaoea7Dw?enablejsapi=1&autoplay=0&controls=1&rel=0" allow="autoplay"></iframe>
+        </div>
+    </div>
+
+    <script>
+        let progress = 0;
+        let unlocked = false;
+        let finished = false;
+        const digBtn = document.getElementById('dig-text');
+        const fill = document.getElementById('fill');
+        const uiInit = document.getElementById('ui-init');
+        const paper = document.getElementById('story-paper');
+        const videoCont = document.getElementById('video-container');
+        const flash = document.getElementById('flash');
+        const sfxDig = document.getElementById('sfx-dig');
+        const sfxShot = document.getElementById('sfx-shot');
+
+        // Unlock audio on first interaction
+        digBtn.addEventListener('mousedown', () => { 
+            if(finished) return;
+            unlocked = true; 
+            digBtn.innerText = "SCRUB";
+        });
+
+        // Digging logic
+        digBtn.addEventListener('mousemove', () => {
+            if (unlocked && progress < 100) {
+                progress += 1.6;
+                fill.style.width = progress + "%";
+                digBtn.classList.add('shaking');
+                
+                sfxDig.volume = 0.8;
+                if(sfxDig.paused) sfxDig.play();
+
+                clearTimeout(window.t);
+                window.t = setTimeout(() => {
+                    digBtn.classList.remove('shaking');
+                    sfxDig.pause();
+                }, 80);
+
+                if (progress >= 100) {
+                    uiInit.style.display = 'none';
+                    paper.style.opacity = "1";
+                    paper.style.pointerEvents = "all";
+                    document.body.style.cursor = "crosshair";
+                }
+            }
+        });
+
+        // Final shot and Video Reveal
+        window.addEventListener('mousedown', () => {
+            if (paper.style.opacity === "1" && !finished) {
+                finished = true;
+                
+                // Audio Shot
+                sfxShot.volume = 1.0;
+                sfxShot.play();
+
+                // Flash FX
+                flash.style.opacity = "1";
+                setTimeout(() => { flash.style.opacity = "0"; }, 150);
+
+                // Transition
+                paper.style.opacity = "0";
+                document.getElementById('ticker').style.display = "none";
+                videoCont.classList.add('up');
+                
+                // Play Video via PostMessage (Cleaner for Autoplay)
+                const iframe = document.getElementById('yt-video');
+                setTimeout(() => {
+                    iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

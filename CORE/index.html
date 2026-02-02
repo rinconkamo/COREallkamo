@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular Core - Stable Manifest</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        * { box-sizing: border-box; outline: none; }
+        body, html { 
+            margin: 0; padding: 0; height: 100vh; width: 100vw; 
+            font-family: 'Share Tech Mono', monospace; 
+            background-color: #000; overflow: hidden; color: #00ff41;
+        }
+
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            z-index: 100; background-size: 100% 2px; pointer-events: none;
+        }
+
+        .module { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: none; justify-content: center; align-items: center; 
+            flex-direction: column; z-index: 10;
+        }
+        .v { display: flex !important; }
+
+        /* A1: RETO */
+        #timer-a1 { font-size: 5rem; color: #ff3e3e; margin-bottom: 10px; text-shadow: 0 0 10px #ff3e3e; }
+        .word-grid {
+            display: grid; grid-template-columns: repeat(10, 50px); gap: 5px;
+            padding: 10px; border: 1px solid rgba(0, 255, 65, 0.3); margin-bottom: 10px;
+        }
+        .cell { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 1.25rem; color: #008f11; }
+        .target-kamo { color: rgba(0, 255, 65, 0.9); text-shadow: 0 0 5px rgba(0, 255, 65, 0.3); }
+        .input-access { background: transparent; border: 1px solid #00ff41; color: #00ff41; padding: 12px; font-family: inherit; text-align: center; font-size: 1.5rem; width: 380px; margin-bottom: 15px; text-transform: uppercase; }
+
+        /* S1: RING DOORS */
+        #S1 { 
+            background-color: #0d0d0d; 
+            background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 25px 25px;
+            padding: 10px;
+        }
+
+        .door-container { display: flex; gap: 40px; margin-bottom: 50px; margin-top: -30px; }
+
+        .ring-door {
+            width: 130px; height: 130px; border-radius: 50%; border: 4px double #00ff41;
+            background: radial-gradient(circle, #000 30%, #0d0d0d 100%);
+            color: #00ff41; cursor: pointer; display: flex; justify-content: center;
+            align-items: center; transition: 0.4s; box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+            text-align: center; font-size: 0.7rem; font-weight: bold; text-transform: uppercase;
+            letter-spacing: 1px; padding: 10px;
+        }
+        .ring-door:hover { box-shadow: 0 0 30px #00ff41; transform: scale(1.05); background: radial-gradient(circle, #00ff4122 30%, #000 100%); }
+
+        .manifest-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+            width: 98%; max-width: 1300px; border-top: 1px solid rgba(0, 255, 65, 0.15); 
+            padding-top: 15px; overflow-y: auto; height: 50vh;
+        }
+        .lang-block { font-size: 0.55rem; line-height: 1.2; color: rgba(255, 255, 255, 0.5); text-align: left; }
+        .lang-block strong { color: #00ff41; display: block; margin-bottom: 3px; font-size: 0.6rem; text-transform: uppercase; }
+        .robotino { color: #aaa; font-family: 'Courier New', Courier, monospace; background: rgba(255,255,255,0.03); padding: 5px; border-left: 2px solid #555; font-size: 0.5rem; }
+
+        /* ERROR SCREEN */
+        #error-screen { text-align: center; color: #ff3e3e; display: none; line-height: 1.5; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="scanlines"></div>
+
+    <div id="A1" class="module v">
+        <div id="timer-a1">10</div>
+        <div id="a1-content" style="display: flex; flex-direction: column; align-items: center;">
+            <div class="word-grid" id="gridA1"></div>
+            <input type="text" id="passA1" class="input-access" placeholder="DECODE..." autocomplete="off">
+            <button style="background:transparent; color:#00ff41; border:1px solid #00ff41; padding:10px 20px; cursor:pointer;" onclick="Control.checkA1()">ACCEDER</button>
+        </div>
+        <div id="error-screen">
+            <p style="font-size: 2rem; font-weight: bold; margin-bottom: 10px;">TIME OUT</p>
+            <p>INTENTE DE NUEVO / ACTUALICE SU PAGINA</p>
+            <p>Try again / Refresh your page</p>
+            <p>もう一度お試しください / ページを更新してください</p>
+            <p>请再试一次 / 刷新页面</p>
+            <p>다시 시도하세요 / 페이지를 새로고침하세요</p>
+            <p>Réessayez / Actualisez votre page</p>
+            <p>Probeer het opnieuw / Ververs de pagina</p>
+            <p>Yritä uudelleen / Päivitä sivu</p>
+            <p>Spróbuj ponownie / Odśwież stronę</p>
+            <p>Попробуйте еще раз / Обновите страницу</p>
+        </div>
+    </div>
+
+    <div id="TRANS1" class="module" style="background:#000; z-index:200;">
+        <div style="font-size:5rem; letter-spacing:10px; color:#fff; text-shadow:0 0 30px #00ff41; font-weight:bold; font-family:serif;">Toma ⍼oma</div>
+    </div>
+
+    <div id="S1" class="module">
+        <div class="door-container">
+            <div class="ring-door" onclick="alert('Gromphabs Markets sequence...')">Gromphabs Markets</div>
+            <div class="ring-door" onclick="alert('IA Rodilla init...')">IA Rodilla</div>
+            <div class="ring-door" onclick="alert('IA Tarjeta access...')">IA Tarjeta</div>
+        </div>
+
+        <div class="manifest-grid">
+            <div class="lang-block"><strong>English</strong>Carved guama in woodwork, / zapote in the mind. I flee from the identical, / carving my own design. I sin wildly, / far from the crowd’s beat. What the eye fails to see, / is my greatest feat.</div>
+            <div class="lang-block"><strong>Русский</strong>Резная гуама в дереве, / саποτα в памяти моей. Бегу от одинаковых, / гравируя путь среди тенεй. Грешу безумно я, / вдали от толп людских. Что глаз не видит здесь, / в масштабах сил моих.</div>
+            <div class="lang-block"><strong>中文</strong>木艺中刻下荚果，/ 记忆里存着大胶果。逃离平庸的一致，/ 雕琢自我的史诗。疯狂地放纵罪孽，/ 远离喧嚣的人群。肉眼难见的隐秘，/ 是我最伟大的量级。</div>
+            <div class="lang-block"><strong>Nederlands</strong>Gesneden guama in hout, / zapote in de geest. Ik vlucht voor het gelijke, / als een scheppend beest. Ik zondig krankzinnig, / ver van de menigte vandaan. Wat het oog niet ziet, / is mijn ware bestaan.</div>
+            <div class="lang-block"><strong>Ελληνικά</strong>Γουάμα σκαλισμένη στο ξύλο, / ζαπότε στη μνήμη. Φεύγω από το όμοιο, / σκαλίζοντας τη δική μου φήμη. Αμαρτάνω τρελά, / μακριά από το πλήθος το βουβό. Ό,τι το μάτι δεν βλέπει, / είναι το μέγεθος το τρανό.</div>
+            <div class="lang-block"><strong>Español</strong>Talle una guama en ebanistería, / zapote en la memoria. Huyo de lo que es igual, / tallando mi propia historia. Peco a lo loco, / lejos de la multitud. Lo que el ojo no percibe, / es mi mayor magnitud.</div>
+            <div class="lang-block"><strong>Italiano</strong>Guama scolpita nel legno, / zapote nella mente. Fuggo dall’identico, / intagliando la mia storia presente. Pecco alla follia, / lontano dalla moltitudine. Ciò che l'occhio non vede, / è la mia vera latitudine.</div>
+            <div class="lang-block"><strong>Maayat'aan</strong>Juch'bil guama ich che', / zapote ich k'aajal. Kin puts'ul ti' le keetilo', / in juch'ik in kuxtal. Kin k'ebantaj j-t'uubul, / náach ti' u ya'abil máak. Le ba'ax ma' u yilik icho', / leti' in nojbe'enil.</div>
+            <div class="lang-block"><strong>日本語</strong>木工に刻むグアマ、/ 記憶の中のサポテ。同じものを逃れ、/ 自らの歴史を彫る。狂ったように罪を犯し、/ 群衆から遠く離れて。目に映らぬものこそ、/ 私の最大の真価。</div>
+            <div class="lang-block"><strong>Deutsch</strong>Geschnitzte Guama im Holz, / Zapote im Gedächtnis. Ich fliehe vor dem Gleichen, / schnitze mein Vermächtnis. Ich sündige verrückt, / fernab der Menschenmenge. Was das Auge nicht erfasst, / ist meine wahre Länge.</div>
+            <div class="lang-block"><strong>Português</strong>Talhei guama em marcenaria, / zapote na memória. Fujo do que é igual, / talhando a minha historia. Peco à loucura, / longe da multidão. O que el ojo não percebe, / é minha mayor amplidão.</div>
+            <div class="lang-block"><strong>Français</strong>Guama sculptée dans le bois, / zapote en mémoire. Je fuis la ressemblance, / sculptant ma propre historia. Je pèche à la folie, / loin de la multitude. Ce que l'œil ne voit pas, / fait ma propre amplitude.</div>
+            <div class="lang-block"><strong>Polski</strong>W drewnie rzeźbię guamę, / w pamięci zapotę. Uciekam od powtarzalności, / rzeźbiąc własną cnotę. Grzeszę jak szaleniec, / z dala od tłumu cieni. Czego oko nie dostrzega, / w mą wielkość się zamieni.</div>
+            <div class="lang-block"><strong>Esperanto</strong>Ĉizita gvamo en ligno, / sapoto en memoro. Mi fuĝas de l' simila, / ĉizante kun fervoro. Mi pekas freneze, / for de la homamas'. Kion okulo ne vidas, / estas mia granda mas'.</div>
+            <div class="lang-block robotino" style="grid-column: span 2;"><strong>Robotino Antiguo</strong>START_PROC: [EBAN_01] // INPUT: GUAMA_WOOD + ZAPOTE_MEMVAR HIST_001 = !IDENTICAL && !MASS_CROWD DO { SIN.RANDOM_VAL_MAX } WHILE (DIST > MULTITUDE) IF (EYE_SCAN == NULL) { MAGNITUDE = INF; } END_PROC // KAMO_RINCON_CORE</div>
+        </div>
+    </div>
+
+    <script>
+        const Control = {
+            secret: "KAMO", timeLeft: 10, timer: null,
+            init: function() { this.buildGrid(); this.startTimer(); },
+            speak: function(t) {
+                const m = new SpeechSynthesisUtterance(t);
+                m.lang = 'es-ES'; m.rate = 1.1; m.pitch = 0.3;
+                window.speechSynthesis.speak(m);
+            },
+            buildGrid: function() {
+                const grid = document.getElementById('gridA1');
+                const pool = ["X", "7", "∫", "√", "Δ", "π", "∞", "Σ", "1", "4", "9", "0", "3", "µ", "Ω"];
+                let cells = Array.from({length: 100}, () => `<div class="cell">${pool[Math.floor(Math.random()*pool.length)]}</div>`);
+                const startPos = 54; 
+                for(let i=0; i<this.secret.length; i++) cells[startPos + i] = `<div class="cell target-kamo">${this.secret[i]}</div>`;
+                grid.innerHTML = cells.join('');
+            },
+            startTimer: function() {
+                this.timer = setInterval(() => {
+                    this.timeLeft--;
+                    if(document.getElementById('timer-a1')) document.getElementById('timer-a1').innerText = this.timeLeft;
+                    if(this.timeLeft <= 0) this.fail();
+                }, 1000);
+            },
+            checkA1: function() {
+                if(document.getElementById('passA1').value.toUpperCase().replace(/\s+/g, '') === this.secret) {
+                    clearInterval(this.timer);
+                    this.speak("Kamo soma");
+                    document.getElementById('A1').classList.remove('v');
+                    document.getElementById('TRANS1').classList.add('v');
+                    setTimeout(() => {
+                        document.getElementById('TRANS1').classList.remove('v');
+                        document.getElementById('S1').classList.add('v');
+                    }, 500);
+                } else { alert("DENIED"); }
+            },
+            fail: function() {
+                clearInterval(this.timer);
+                document.getElementById('a1-content').style.display = 'none';
+                document.getElementById('error-screen').style.display = 'block';
+            }
+        };
+        window.onload = () => Control.init();
+    </script>
+</body>
+</html>

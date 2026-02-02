@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular Core - Stable Manifest [FULL INTEGRATION PF1-PF6]</title>
+    <style>
+        /* --- ESTILOS ORIGINALES CORE + PF1 --- */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Special+Elite&family=Almendra+Display&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@700&display=swap');
+
+        * { box-sizing: border-box; outline: none; }
+        body, html { 
+            margin: 0; padding: 0; min-height: 100vh; width: 100vw; 
+            font-family: 'Share Tech Mono', monospace; 
+            background-color: #000; color: #00ff41;
+            overflow-x: hidden;
+        }
+
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            z-index: 1000; background-size: 100% 2px; pointer-events: none;
+        }
+
+        .module { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            display: none; justify-content: center; align-items: center; 
+            flex-direction: column; z-index: 10;
+        }
+        .v { display: flex !important; }
+
+        #timer-a1 { font-size: 5rem; color: #ff3e3e; margin-bottom: 10px; text-shadow: 0 0 10px #ff3e3e; }
+        .word-grid {
+            display: grid; grid-template-columns: repeat(10, 50px); gap: 5px;
+            padding: 10px; border: 1px solid rgba(0, 255, 65, 0.3); margin-bottom: 10px;
+        }
+        .cell { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; font-size: 1.25rem; color: #008f11; }
+        .target-kamo { color: rgba(0, 255, 65, 0.9); text-shadow: 0 0 5px rgba(0, 255, 65, 0.3); }
+        .input-access { background: transparent; border: 1px solid #00ff41; color: #00ff41; padding: 12px; font-family: inherit; text-align: center; font-size: 1.5rem; width: 380px; margin-bottom: 15px; text-transform: uppercase; }
+
+        #S1 { 
+            background-color: #0d0d0d; 
+            background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 25px 25px;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .door-container { 
+            display: flex; gap: 20px; margin-bottom: 40px; margin-top: 20px; 
+            flex-wrap: wrap; justify-content: center; 
+        }
+
+        .ring-door {
+            width: 110px; height: 110px; border-radius: 50%; border: 4px double #00ff41;
+            background: radial-gradient(circle, #000 30%, #0d0d0d 100%);
+            color: #00ff41; cursor: pointer; display: flex; justify-content: center;
+            align-items: center; transition: 0.4s; box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+            text-align: center; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;
+            letter-spacing: 1px; padding: 10px;
+        }
+        .ring-door:hover { box-shadow: 0 0 30px #00ff41; transform: scale(1.05); background: radial-gradient(circle, #00ff4122 30%, #000 100%); }
+
+        .manifest-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+            width: 98%; max-width: 1300px; border-top: 1px solid rgba(0, 255, 65, 0.15); 
+            padding-top: 15px; margin-bottom: 50px;
+        }
+        .lang-block { font-size: 0.55rem; line-height: 1.2; color: rgba(255, 255, 255, 0.5); text-align: left; }
+        .lang-block strong { color: #00ff41; display: block; margin-bottom: 3px; font-size: 0.6rem; text-transform: uppercase; }
+        .robotino { color: #aaa; font-family: 'Courier New', Courier, monospace; background: rgba(255,255,255,0.03); padding: 5px; border-left: 2px solid #555; font-size: 0.5rem; }
+
+        #error-screen { text-align: center; color: #ff3e3e; display: none; line-height: 1.5; font-size: 0.85rem; }
+
+        :root { --wood: #1a0f0a; --paper: #e6cc9f; --gold: #d4af37; --red: #8b0000; --deep-sea: #001219; --btc: #f7931a; }
+        #PF1_CONTENT { display: none; width: 100%; background-color: var(--wood); background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); padding: 40px 10px; justify-content: center; z-index: 50; overflow-y: auto; }
+        .pergamino { max-width: 1100px; width: 100%; background-color: var(--paper); background-image: url('https://www.transparenttextures.com/patterns/old-paper-2.png'); padding: 60px; position: relative; box-shadow: 30px 40px 100px rgba(0,0,0,0.9); border: 1px solid #c4a484; color: #2c1e14; font-family: 'Special Elite', serif; }
+        .clavo { position: absolute; width: 38px; height: 38px; background: radial-gradient(circle at 10px 10px, #444, #000); border-radius: 50%; box-shadow: 4px 6px 10px rgba(0,0,0,0.8); z-index: 100; }
+        .cl-tl { top: 15px; left: 15px; } .cl-tr { top: 15px; right: 15px; } .cl-bl { bottom: 15px; left: 15px; } .cl-br { bottom: 15px; right: 15px; }
+        .pergamino h1 { font-family: 'Almendra Display', serif; font-size: 6rem; margin: 0; color: var(--red); text-align: center; }
+        .video-radar { border: 15px solid #221a14; background: #000; margin-bottom: 50px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
+        .mando-row { display: flex; gap: 40px; margin-bottom: 50px; align-items: center; }
+        .marco-oro-grande { background: #2a1b0a; padding: 20px; border: 12px solid var(--gold); outline: 5px solid #1a120b; box-shadow: 20px 25px 50px rgba(0,0,0,0.6); transform: rotate(-1deg); flex-shrink: 0; }
+        .marco-oro-grande img { width: 340px; height: 440px; object-fit: cover; border: 4px solid var(--gold); }
+        .label-oro { background: var(--gold); color: #000; font-weight: bold; padding: 12px; font-size: 1.2rem; margin-top: 15px; text-align: center; }
+        .historia-box { flex: 1; height: 480px; overflow-y: scroll; background: rgba(0,0,0,0.06); padding: 30px; border-left: 6px solid var(--gold); font-size: 1.1rem; line-height: 1.8; text-align: justify; }
+        .botin-grid { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; margin-top: 50px; }
+        .item-botin { background: #fff; padding: 10px 10px 40px 10px; width: 180px; box-shadow: 5px 15px 25px rgba(0,0,0,0.3); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: zoom-in; position: relative; }
+        .item-botin img { width: 100%; height: 180px; object-fit: cover; display: block; }
+        .item-botin:hover { transform: scale(1.7); z-index: 500; }
+        .popup-info { position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%); width: 240px; background: rgba(0, 18, 25, 0.98); color: var(--gold); padding: 15px; border: 2px solid var(--gold); border-radius: 5px; font-size: 0.85rem; visibility: hidden; opacity: 0; transition: 0.3s; text-align: center; }
+        .item-botin:hover .popup-info { visibility: visible; opacity: 1; }
+        .btc { color: var(--btc); font-weight: bold; }
+        .modal { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; }
+        .modal-img { max-width: 80%; max-height: 85%; border: 6px solid var(--gold); }
+        .cerrar { position: absolute; top: 20px; right: 40px; color: white; font-size: 60px; cursor: pointer; }
+
+        /* --- ESTILOS ORIGINALES PF2 --- */
+        #PF2_CONTENT {
+            display: none; width: 100%; height: 100%;
+            background: #000 url('PF2 FILES/fondo.jpg') no-repeat center center fixed;
+            background-size: cover; justify-content: center; align-items: center;
+            min-height: 100vh; overflow: hidden; z-index: 60;
+        }
+        .pizarra-layout {
+            width: 50%; max-width: 650px;
+            display: flex; flex-direction: column; align-items: center;
+            margin-top: -140px; position: relative; font-family: 'Special Elite', cursive;
+        }
+        .pizarra-layout h1 { 
+            color: rgba(255, 255, 255, 0.7); font-size: 1.8rem; letter-spacing: 12px; 
+            margin-bottom: 10px; text-shadow: 2px 2px 5px #000;
+        }
+        .archivo-historia {
+            width: 100%; background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px; margin-bottom: 10px;
+        }
+        .scroll-archivo { 
+            height: 195px; overflow-y: auto; padding-right: 10px;
+            font-family: 'Courier New', Courier, monospace; font-weight: bold; color: rgba(255, 255, 255, 0.9);
+        }
+        .scroll-archivo::-webkit-scrollbar { width: 4px; }
+        .scroll-archivo::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); }
+        .pf2-lang-block { margin-bottom: 30px; font-size: 0.75rem; line-height: 1.4; text-align: justify; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .pf2-label { color: #f1c40f; font-weight: bold; font-size: 0.65rem; display: block; margin-bottom: 5px; font-family: 'Special Elite'; }
+        .grid-fotos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; width: 100%; margin-bottom: 15px; }
+        .slide { background: #fff; padding: 2px; border: 1px solid #ddd; box-shadow: 4px 4px 15px #000; cursor: pointer; transition: 0.2s; }
+        .slide img { width: 100%; height: 50px; object-fit: cover; filter: grayscale(0.9); }
+        .slide:hover { filter: none; transform: scale(1.05); }
+        #popup-lateral {
+            display: none; position: fixed; width: 380px; background: #fefefe; padding: 25px; border: 2px solid #666;
+            box-shadow: 0 0 80px rgba(0,0,0,1); z-index: 10000; flex-direction: column; align-items: center;
+        }
+        #img-pop { width: 100%; border: 1px solid #000; margin-bottom: 15px; box-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
+        .desc-box { font-size: 1rem; color: #111; text-align: justify; line-height: 1.5; font-family: 'Courier New', Courier, monospace; font-weight: bold; max-height: 350px; overflow-y: auto; padding-right: 10px; }
+        .btn-video { background: #900; color: #fff; border: 2px solid #f00; padding: 12px 30px; cursor: pointer; font-family: 'Special Elite'; font-size: 0.9rem; }
+        #video-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; flex-direction: column; justify-content: center; align-items: center; }
+
+        /* --- ESTILOS ORIGINALES PF3 (CORREGIDO) --- */
+        #PF3_CONTENT {
+            display: none; width: 100%; height: 100%;
+            background-color: #000; color: #fff;
+            font-family: 'Special Elite', typewriter, serif;
+            overflow: hidden; z-index: 70;
+            justify-content: center; align-items: center;
+        }
+        .desert-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,1)),
+                url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?q=80&w=2000');
+            background-size: cover; background-position: center 75%;
+            filter: grayscale(100%) contrast(160%) brightness(25%); z-index: 1;
+        }
+        .grain {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png');
+            opacity: 0.2; pointer-events: none; z-index: 10;
+        }
+        .ticker-wrapper {
+            position: absolute; top: 0; width: 100%; background: rgba(255, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 12px 0; z-index: 50; overflow: hidden; white-space: nowrap;
+        }
+        .ticker-content {
+            display: inline-block; animation: ticker 20s linear infinite;
+            font-family: 'Courier Prime', monospace; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem; text-transform: uppercase;
+        }
+        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
+        .ticker-content span { margin-right: 50px; }
+        .red { color: #ff4444; }
+        .green { color: #44ff44; }
+        .ui-dig { text-align: center; z-index: 15; position: relative; }
+        #dig-text { font-size: 5rem; letter-spacing: 20px; cursor: pointer; transition: transform 0.1s; display: block; text-shadow: 0 0 20px #fff; }
+        .pit { width: 300px; height: 1px; background: #222; margin: 20px auto; overflow: hidden; }
+        #fill { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; }
+        #story-paper {
+            position: absolute; width: 85%; max-width: 550px; max-height: 80vh; overflow-y: auto;
+            top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-0.5deg);
+            background: #b5a494; color: #111; padding: 45px;
+            box-shadow: 0 0 150px #000; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.8s;
+            user-select: text;
+        }
+        .verses { font-style: italic; margin: 25px 0; padding: 15px; border-left: 3px solid #111; font-size: 1rem; line-height: 1.6; }
+        #video-container {
+            position: absolute; bottom: -120%; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 40; display: flex; justify-content: center; align-items: center;
+            transition: bottom 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        #video-container.up { bottom: 0; }
+        .player-wrapper { width: 85%; max-width: 1000px; max-height: 80vh; aspect-ratio: 16/9; background: #000; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .flash { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; z-index: 100; pointer-events: none; }
+        .shaking { animation: shake 0.1s infinite; }
+        @keyframes shake { 0% { transform: translate(2px, 1px); } 50% { transform: translate(-2px, -1px); } }
+
+        /* --- ESTILOS ORIGINALES PF4 --- */
+        #PF4_CONTENT {
+            display: none; width: 100%; height: 100%;
+            position: absolute; top:0; left:0; z-index: 80;
+            background-color: #000;
+            background-image: url('PF4 FILES/fondo PF4.jpg'); 
+            background-attachment: fixed;
+            background-position: calc(50% - 39px) calc(50% + 15px); 
+            background-repeat: no-repeat;
+            background-size: 90%; 
+            font-family: 'Courier New', Courier, monospace;
+            color: white;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+        :root {
+            --neon-cyan: #00f2ff;
+            --neon-gold: #ffcc00;
+            --radioactive-green: #32ff7e; 
+        }
+        #flash-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: white; opacity: 0; pointer-events: none; z-index: 9999;
+        }
+        #fixed-ruler {
+            position: fixed; left: 40px; top: -11px; height: calc(100vh + 11px); width: 60px;
+            border-right: 1px solid var(--neon-cyan); z-index: 10;
+            pointer-events: none; opacity: 0.6; display: none;
+        }
+        .tick { position: absolute; width: 15px; height: 2px; background: currentColor; }
+        .tick-label { position: absolute; font-size: 16px; font-weight: 900; transform: translateY(-50%); }
+        .label-6 { font-size: 35px !important; text-shadow: 0 0 15px var(--neon-cyan); }
+        .main-content { position: relative; z-index: 2; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        #recover-btn {
+            background: rgba(0, 0, 0, 0.8); color: #fff;
+            border: 1px solid var(--neon-cyan); padding: 18px 45px; font-size: 1.1rem;
+            letter-spacing: 12px; cursor: pointer; backdrop-filter: blur(10px);
+        }
+        #flap-container { display: none; text-align: center; }
+        .flap { display: inline-block; background: rgba(0, 0, 0, 0.9); border: 1px solid var(--neon-cyan); margin: 2px; padding: 10px; font-size: 2rem; min-width: 35px; color: var(--neon-cyan); }
+        #story-box-pf4 { 
+            display: none; max-width: 780px; margin: 60px auto; padding: 0 40px;
+            border-left: 3px solid var(--neon-cyan); background: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(12px); overflow: hidden; height: 0;
+            transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1), padding 0.5s ease;
+        }
+        #video-player-pf4 { 
+            display: none; 
+            position: relative; 
+            width: 62%; 
+            max-width: 650px; 
+            margin: 500px auto 150px auto; 
+            transform: translateX(6px); 
+            background: transparent;
+        }
+        #mobile-ruler {
+            position: absolute; right: -50px; top: 0; height: 100%; width: 40px;
+            border-left: 1px solid var(--neon-gold); z-index: 10; pointer-events: none;
+        }
+        #mobile-ruler .tick-label { left: 25px; color: var(--neon-gold); }
+        .video-ratio { 
+            position: relative; 
+            padding-bottom: 56.25%; 
+            height: 0; 
+            border: none;
+            overflow: hidden;
+        }
+        .video-ratio iframe { 
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            border: none; opacity: 0.2;
+            transition: opacity 1s;
+        }
+        @keyframes globalFlash {
+            0% { opacity: 0; background: white; }
+            15% { opacity: 1; background: var(--radioactive-green); }
+            100% { opacity: 0; background: transparent; }
+        }
+
+        /* --- ESTILOS ORIGINALES PF5 --- */
+        :root {
+            --neon-pink-pf5: #ff00ff;
+            --neon-cyan-pf5: #00ffff;
+            --neon-green-pf5: #39ff14;
+            --bg-black-pf5: #050505;
+        }
+
+        #PF5_CONTENT {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-black-pf5);
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            overflow: hidden;
+            z-index: 90;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #PF5_CONTENT::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
+            z-index: 1000;
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .pf5-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .page-section-pf5 { display: none; width: 100%; max-width: 800px; }
+        .active-pf5 { display: flex; flex-direction: column; align-items: center; }
+
+        .title-img-pf5 {
+            max-width: 600px;
+            width: 90%;
+            border: 4px solid var(--neon-pink-pf5);
+            box-shadow: 0 0 20px var(--neon-pink-pf5);
+            image-rendering: pixelated;
+            margin-bottom: 20px;
+        }
+
+        .blink-pf5 { animation: blinker-pf5 0.8s linear infinite; cursor: pointer; color: var(--neon-cyan-pf5); }
+        @keyframes blinker-pf5 { 50% { opacity: 0; } }
+
+        #scene-image-pf5 {
+            max-width: 100%;
+            max-height: 50vh; 
+            object-fit: contain;
+            border: 4px solid #fff;
+            image-rendering: pixelated;
+            transition: opacity 0.4s;
+            flex-shrink: 1;
+        }
+
+        .dialog-box-pf5 {
+            width: 100%;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 4px double var(--neon-cyan-pf5);
+            margin-top: 15px;
+            padding: 15px;
+            box-sizing: border-box;
+            position: relative;
+            text-align: left;
+            cursor: pointer;
+            flex-shrink: 0; 
+        }
+
+        .speaker-pf5 { 
+            color: var(--neon-pink-pf5); 
+            font-size: 14px; 
+            margin-bottom: 10px; 
+            display: block; 
+            font-family: 'Share Tech Mono', monospace; 
+        }
+        .text-pf5 { 
+            font-size: 16px; 
+            line-height: 1.4; 
+            color: #eee; 
+            margin: 0; 
+            font-family: 'Courier Prime', monospace; 
+            letter-spacing: 0.5px; 
+        }
+
+        .video-wrapper-pf5 {
+            width: 640px;
+            max-width: 90%;
+            margin: 0 auto;
+            position: relative;
+            padding-bottom: 360px;
+            border: 6px solid var(--neon-pink-pf5);
+            box-shadow: 0 0 30px var(--neon-pink-pf5);
+        }
+        .video-wrapper-pf5 iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        #footer-pf5 {
+            position: fixed;
+            bottom: 10px;
+            font-size: 8px;
+            color: #444;
+            z-index: 10;
+        }
+
+        /* BOTONES DE REGRESO (ACTUALIZADO) */
+        .btn-regreso-s1 {
+            background: #8b0000; color: #e6cc9f; border: 2px solid #221a14;
+            padding: 10px 20px; font-family: 'Special Elite', serif; cursor: pointer;
+            margin-bottom: 20px; font-weight: bold; box-shadow: 3px 3px 5px rgba(0,0,0,0.5);
+        }
+        .btn-regreso-s1-pf2 {
+            position: absolute; top: 20px; left: 20px; background: rgba(0, 255, 65, 0.1);
+            color: #00ff41; border: 1px solid #00ff41; padding: 10px 15px;
+            font-family: 'Share Tech Mono'; cursor: pointer; z-index: 5000;
+        }
+        .btn-regreso-s1-pf4 {
+            position: fixed; top: 20px; left: 20px; background: rgba(0, 242, 255, 0.1);
+            color: var(--neon-cyan); border: 1px solid var(--neon-cyan); padding: 10px 15px;
+            font-family: 'Courier New'; cursor: pointer; z-index: 10000;
+        }
+        .btn-regreso-pf5 {
+            position: fixed; top: 20px; left: 20px; background: rgba(255, 0, 255, 0.2);
+            color: var(--neon-pink-pf5); border: 1px solid var(--neon-pink-pf5); padding: 10px 15px;
+            font-family: 'Press Start 2P', cursive; font-size: 8px; cursor: pointer; z-index: 10001;
+        }
+
+        /* --- ESTILOS ADICIONALES PF6 --- */
+        #PF6_CONTENT { 
+            display: none; position: fixed; top: 0; left: 0; height: 100%; width: 100%; 
+            overflow: hidden; background: #000; font-family: Helvetica, Arial, sans-serif; z-index: 95;
+        }
+        .capa-pf6 { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; transition: opacity 2s ease-in-out; opacity: 0; z-index: 1; }
+        .overlay-pf6 { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); z-index: 2; }
+        
+        #texto-secuencia-pf6 {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 3; color: rgba(255, 255, 255, 0.25); font-size: 6rem; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 12px; transition: opacity 1.5s ease; opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Grilla Calibrada (33px left, 26px top, 1.6deg, 1.08 scale) */
+        #grid-interactiva-pf6 {
+            position: fixed; top: 26px; left: 33px; width: 100vw; height: 100vh;
+            display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(4, 1fr);
+            z-index: 5; display: none; transform: rotate(1.6deg) scale(1.08); transform-origin: center;
+        }
+
+        .zona-pf6 { cursor: pointer; transition: background 0.4s; border: 1px solid rgba(255, 255, 255, 0.03); }
+        .zona-pf6:hover { background: rgba(217, 197, 178, 0.1); }
+        .z1-pf6 { grid-column: span 4; grid-row: span 2; } .z2-pf6 { grid-column: span 4; grid-row: span 2; }
+        .z3-pf6 { grid-column: span 4; grid-row: span 2; } .z4-pf6 { grid-column: span 4; grid-row: span 2; }
+
+        /* Estilo de Popups PF6 */
+        .popup-pf6 {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%; max-width: 900px; height: 70vh; background: rgba(20, 20, 20, 0.95);
+            border: 1px solid #D9C5B2; z-index: 100; display: none; padding: 20px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8); color: #D9C5B2; overflow: hidden;
+        }
+
+        .popup-content-pf6 { display: flex; height: 100%; gap: 20px; }
+        .popup-img-pf6 { width: 45%; background-size: cover; background-position: center; border: 1px solid rgba(217,197,178,0.3); }
+        .popup-text-pf6 { width: 55%; font-family: 'Courier New', Courier, monospace; line-height: 1.6; font-size: 0.95rem; white-space: pre-wrap; }
+        .close-btn-pf6 { position: absolute; top: 10px; right: 20px; cursor: pointer; font-size: 2rem; color: #D9C5B2; }
+
+        #btn-back-pf6 { position: fixed; top: 20px; left: 20px; z-index: 10002; background: rgba(0, 0, 0, 0.6); color: #D9C5B2; border: 1px solid #D9C5B2; padding: 10px 15px; cursor: pointer; font-family: 'Courier Prime'; }
+    </style>
+</head>
+<body id="stage">
+    <div class="scanlines"></div>
+
+    <div id="A1" class="module v">
+        <div id="timer-a1">10</div>
+        <div id="a1-content" style="display: flex; flex-direction: column; align-items: center;">
+            <div class="word-grid" id="gridA1"></div>
+            <input type="text" id="passA1" class="input-access" placeholder="DECODE..." autocomplete="off">
+            <button style="background:transparent; color:#00ff41; border:1px solid #00ff41; padding:10px 20px; cursor:pointer;" onclick="Control.checkA1()">ACCEDER</button>
+        </div>
+        <div id="error-screen">
+            <p style="font-size: 2rem; font-weight: bold; margin-bottom: 10px;">TIME OUT</p>
+            <p>INTENTE DE NUEVO / ACTUALICE SU PAGINA</p>
+            <p>Try again / Refresh your page</p>
+            <p>もう一度お試しください / ページを更新してください</p>
+            <p>请再试一次 / 刷新页面</p>
+            <p>다시 시도하세요 / 페이지를 새로고침하세요</p>
+            <p>Réessayez / Actualisez votre page</p>
+            <p>Probeer het opnieuw / Ververs de pagina</p>
+            <p>Yritä uudelleen / Päivitä sivu</p>
+            <p>Spróbuj ponownie / Odśwież stronę</p>
+            <p>Попробуйте еще раз / Обновите страницу</p>
+        </div>
+    </div>
+
+    <div id="TRANS1" class="module" style="background:#000; z-index:200;">
+        <div style="font-size:5rem; letter-spacing:10px; color:#fff; text-shadow:0 0 30px #00ff41; font-weight:bold; font-family:serif;">Toma ⍼oma</div>
+    </div>
+
+    <div id="S1" class="module">
+        <div class="door-container">
+            <div class="ring-door" onclick="Control.openPF1()">PF1</div>
+            <div class="ring-door" onclick="Control.openPF2()">PF2</div>
+            <div class="ring-door" onclick="Control.openPF3()">PF3</div>
+            <div class="ring-door" onclick="Control.openPF4()">PF4</div>
+            <div class="ring-door" onclick="Control.openPF5()">PF5</div>
+            <div class="ring-door" onclick="Control.openPF6()">PF6</div>
+        </div>
+        <div class="manifest-grid">
+            <div class="lang-block"><strong>English</strong>Carved guama in woodwork, / zapote in the mind. I flee from the identical, / carving my own design. I sin wildly, / far from the crowd’s beat. What the eye fails to see, / is my greatest feat.</div>
+            <div class="lang-block"><strong>Русский</strong>Резная гуама в дереве, / саποτα в памяти моей. Бегу от одинаковых, / гравируя путь среди тенεй. Грешу безумно я, / вдали от толп людских. Что глаз не видит здесь, / в масштабах сил моих.</div>
+            <div class="lang-block"><strong>中文</strong>木艺中刻下荚果，/ 記憶裡存著大膠果。逃離平庸的一致，/ 雕琢自我的史詩。瘋狂地放縱罪孽，/ 遠離喧囂的人群。肉眼難見的隱秘，/ 是我最偉大的量級.</div>
+            <div class="lang-block"><strong>Nederlands</strong>Gesneden guama in hout, / zapote in de geest. Ik vlucht voor het gelijke, / als een scheppend beest. Ik zondig krankzinnig, / ver van de menigte vandaan. Wat het ojo niet ziet, / is mijn ware bestaan.</div>
+            <div class="lang-block"><strong>Ελληνικά</strong>Γουάμα σκαλισμένη στο ξύλο, / ζαπότε στη μνήμη. Φεύγω από το όμοιο, / σκαλίζοντας τη δική μου φήμη. Αμαρτάνω τρελά, / μακριά από το πλήθος το βουβό. Ό,τι το μάτι δεν βλέπει, / είναι το μέγεθος το τρανó.</div>
+            <div class="lang-block"><strong>Español</strong>Talle una guama en ebanistería, / zapote en la memoria. Huyo de lo que es igual, / tallando mi propia historia. Peco a lo loco, / lejos de la multitud. Lo que el ojo no percibe, / es mi mayor magnitud.</div>
+            <div class="lang-block"><strong>Italiano</strong>Guama scolpita nel legno, / zapote nella mente. Fuggo dall’identico, / intagliando la mia historia presente. Pecco alla follia, / lontano dalla moltitudine. Ciò que l'occhio non vede, / è la mia vera latitudine.</div>
+            <div class="lang-block"><strong>Maayat'aan</strong>Juch'bil guama ich che', / zapote ich k'aajal. Kin puts'ul ti' le keetilo', / in juch'ik in kuxtal. Kin k'ebantaj j-t'uubul, / náach ti' u ya'abil máak. Le ba'ax ma' u yilik icho', / leti' in nojbe'enil.</div>
+            <div class="lang-block"><strong>日本語</strong>木工に刻むグアマ、/ 記憶の中 del サポテ。同じものを逃れ、/ 自らの歴史を彫る。狂ったように罪を犯し、/ 群衆から遠く離れて。目に映らぬものこそ、/ 私の最大の真価。</div>
+            <div class="lang-block"><strong>Deutsch</strong>Geschnitzte Guama im Holz, / Zapote im Gedächtnis. Ich fliehe vor dem Gleichen, / schnitze mein Vermächtnis. Ich sündige verrückt, / fernab der Menschenmenge. Was das Auge nicht erfasst, / ist meine wahre Länge.</div>
+            <div class="lang-block"><strong>Português</strong>Talhei guama em marcenaria, / zapote na memória. Fujo do que é igual, / talhando a miña historia. Peco à loucura, / longe da multitudão. O que o ojo não percebe, / é miña mayor amplidão.</div>
+            <div class="lang-block"><strong>Français</strong>Guama sculptée dans le bois, / zapote en mémoire. Je fuis la ressemblance, / sculptant ma propre historia. Je pèche à la folie, / loin de la multitude. Ce que l'œil ne voit pas, / fait ma propre amplitude.</div>
+            <div class="lang-block"><strong>Polski</strong>W drewnie rzeźbię guamę, / w pamięci zapotę. Uciekam od powtarzalności, / rzeźbiąc własną cnotę. Grzeszę jak szaleniec, / z dala od tłumu cieni. Czego oko nie dostrzega, / w mą wielkość się zamieni.</div>
+            <div class="lang-block"><strong>Esperanto</strong>Ĉizita gvamo en ligno, / sapoto en memoro. Mi fuĝas de l' simila, / ĉizante kun fervoro. Mi pekas freneze, / for de la homamas'. Kion okulo ne vidas, / estas mia granda mas'.</div>
+            <div class="lang-block robotino" style="grid-column: span 2;"><strong>Robotino Antiguo</strong>START_PROC: [EBAN_01] // INPUT: GUAMA_WOOD + ZAPOTE_MEMVAR HIST_001 = !IDENTICAL && !MASS_CROWD DO { SIN.RANDOM_VAL_MAX } WHILE (DIST > MULTITUDE) IF (EYE_SCAN == NULL) { MAGNITUDE = INF; } END_PROC // KAMO_RINCON_CORE</div>
+        </div>
+    </div>
+
+    <div id="PF1_CONTENT">
+        <div class="pergamino">
+            <button class="btn-regreso-s1" onclick="Control.backToS1('PF1_CONTENT')">BACK</button>
+            <div class="clavo cl-tl"></div><div class="clavo cl-tr"></div>
+            <div class="clavo cl-bl"></div><div class="clavo cl-br"></div>
+            <header>
+                <h1>Gromphabs</h1>
+                <div style="text-align:center; font-weight:bold;">Cap#68 m.e.e.a</div>
+            </header>
+            <div class="video-radar">
+                <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">
+                    <iframe id="yt-video-pf1" style="position:absolute;top:0;left:0;width:100%;height:100%;" 
+                        src="https://www.youtube.com/embed/1FUNWFm8C_M?enablejsapi=1" 
+                        frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+            <section class="mando-row">
+                <div class="marco-oro-grande">
+                    <img src="PF1 FILES/tu-foto-capitan.jpg" alt="Capitán Kamo Rincon">
+                    <div class="label-oro">Cap. Chef Pirata Kamo Rincon</div>
+                </div>
+                <div class="historia-box">
+                    <p>En las sombras del Abismo de Krakatoa, bajo lunas plateadas que cortan el horizonte, sellamos el pacto más arriesgado de mi carrera. El Gromphabs, ese gigante de las mareas con un caparazón forjado en coral antiguo, emergió para reclamar su lugar. No hubo necesidad de arpones ni de sangre; solo bastó el respeto entre un pirata del sabor y el coloso de las profundidades.</p>
+                    <p>In the shadows of the Krakatoa Abyss, beneath silver moons that slice through the horizon, we sealed the riskiest pact of my career. The Gromphabs, that giant of the tides with a shell forged from ancient coral, emerged to claim its place. There was no need for harpoons or blood; respect between a pirate of flavor and the colossus of the depths was enough</p>
+                    <p>地平線を切り裂く銀色の月明かりの下、クラカトア深海の影の中で、私はキャリアで最も危険な契約を結んだ。古代のサンゴで鍛えられた甲羅を持つ潮の巨人、グロムファブスが自らの居場所を主張するために現れた。銛も血も必要なかった。味の海賊と深海の巨像との間に流れる敬意だけで十分だったのだ。</p>
+                    <p>En la ombroj de la Abismo de Krakatoa, sub arĝentaj lunoj kiuj tranĉas la horizonton, ni sigelis la plej riskan pakton de mia kariero. La Gromphabs, tiu tajda giganto kun kiraso elforĝita el antikva koralo, emerĝis por postuli sian lokon. Ne estis bezono de harpunoj nek sango; sufiĉis nur la respekto inter pirato de la gusto kaj la koloso de la profundoj</p>
+                </div>
+            </section>
+            <h3 style="text-align:center; color: var(--red); font-family: 'Almendra Display'; font-size: 2.5rem;">REGISTRO DE BOTÍN</h3>
+            <div class="botin-grid">
+                <div class="item-botin" onclick="Control.verGrande('PF1 FILES/1 gromp.jpeg')">
+                    <img src="PF1 FILES/1 gromp.jpeg">
+                    <div class="popup-info">
+                        <strong>CUCHUCO JUICE ORIGINAL</strong><br>
+                        Extracto puro de la fosa abisal, destilado en frío.<br>
+                        <span class="valor-tag">Valor: $180,000 USD / KG</span><br>
+                        <span class="btc">BTC: 2.75</span>
+                    </div>
+                </div>
+                <div class="item-botin" onclick="Control.verGrande('PF1 FILES/2 gromp.jpeg')">
+                    <img src="PF1 FILES/2 gromp.jpeg">
+                    <div class="popup-info">
+                        <strong>KAMO RESERVE SELECTION</strong><br>
+                        Cosecha privada del Chef, añejada en barrica de coral negro.<br>
+                        <span class="valor-tag">Valor: $250,000 USD / KG</span><br>
+                        <span class="btc">BTC: 3.82</span>
+                    </div>
+                </div>
+                <div class="item-botin" onclick="Control.verGrande('PF1 FILES/3 gromp.jpeg')">
+                    <img src="PF1 FILES/3 gromp.jpeg">
+                    <div class="popup-info">
+                        <strong>RESERVA RESTAURANT</strong><br>
+                        Acceso exclusivo a mesa de mando en el Kamo Rincón.<br>
+                        <span class="valor-tag">Reserva: $50,000 USD</span><br>
+                        <span class="btc">BTC: 0.76</span>
+                    </div>
+                </div>
+                <div class="item-botin" onclick="Control.verGrande('PF1 FILES/4 gromp.jpeg')">
+                    <img src="PF1 FILES/4 gromp.jpeg">
+                    <div class="popup-info">
+                        <strong>RECETA PROHIBIDA</strong><br>
+                        Manuscrito original del pacto con el Gromphabs.<br>
+                        <span class="valor-tag">Valor: $750,000 USD</span><br>
+                        <span class="btc">BTC: 11.45</span>
+                    </div>
+                </div>
+                <div class="item-botin" onclick="Control.verGrande('PF1 FILES/5 gromp.jpeg')">
+                    <img src="PF1 FILES/5 gromp.jpeg">
+                    <div class="popup-info">
+                        <strong>EL PRIMIGENIO ABISAL</strong><br>
+                        Crustáceo colosal vivo capturado en el Abismo.<br>
+                        <span class="valor-tag">Valor: $2,100,000 USD</span><br>
+                        <span class="btc">BTC: 32.10</span>
+                    </div>
+                </div>
+            </div>
+            <footer style="margin-top: 60px; border-top: 3px solid var(--gold); padding-top: 30px; text-align: center; font-weight: bold;">
+                <p>© 2026 - TODOS LOS DERECHOS RESERVADOS DEL PIRATA CHEF CAPITÁN, KAMO RINCON.</p>
+            </footer>
+        </div>
+    </div>
+
+    <div id="PF2_CONTENT">
+        <button class="btn-regreso-s1-pf2" onclick="Control.backToS1('PF2_CONTENT')">BACK</button>
+        <div class="pizarra-layout">
+            <h1>La Tarjeta</h1>
+            <div class="archivo-historia">
+                <div class="scroll-archivo" id="historia-total"></div>
+            </div>
+            <div class="grid-fotos" id="contenedor-fotos"></div>
+            <button class="btn-video" onclick="PF2_Logic.openVideo()">Video Evidence Case Waldorf</button>
+        </div>
+        <div id="popup-lateral" onclick="this.style.display='none'">
+            <img id="img-pop">
+            <div class="desc-box" id="txt-pop"></div>
+            <span style="font-size: 0.7rem; color: #900; margin-top: 20px; cursor: pointer; font-weight: bold;">[ CLIC PARA CERRAR ]</span>
+        </div>
+        <div id="video-overlay">
+            <iframe id="yt-player" width="85%" height="550" src="" frameborder="0" allow="autoplay; fullscreen"></iframe>
+            <p onclick="PF2_Logic.closeVideo()" style="color:white; cursor:pointer; margin-top:20px;">[ ESC ] DESTRUIR ARCHIVO</p>
+        </div>
+    </div>
+
+    <div id="PF3_CONTENT">
+        <button class="btn-regreso-s1-pf2" style="z-index: 100;" onclick="Control.backToS1('PF3_CONTENT')">BACK</button>
+        
+        <audio id="sfx-dig" src="https://www.soundjay.com/nature/sounds/sand-curdle-1.mp3" preload="auto"></audio>
+        <audio id="sfx-shot" src="https://www.soundjay.com/mechanical/sounds/gun-shot-1.mp3" preload="auto"></audio>
+
+        <div class="flash" id="flash"></div>
+        <div class="desert-bg"></div>
+        <div class="grain"></div>
+
+        <div class="ticker-wrapper" id="ticker">
+            <div class="ticker-content">
+                <span class="green">EL DOYEN: +12.4% ▲</span>
+                <span class="green">PHARMACOIN: +440% ▲▲▲</span>
+                <span class="red">SOUND_DESIGN_TEAM: -99.6% ▼</span>
+                <span class="red">PAGO_DIGNIDAD: RECHAZADO</span>
+                <span class="green">EGO_COIN: +99.6% ▲</span>
+                <span class="red">TRUST_INDEX: 0.00</span>
+                <span class="green">COBRO_BALA: COTIZANDO ▲</span>
+                <span>VALOR_PALABRA: -99.9% ▼</span>
+                <span class="green">EL DOYEN: +12.4% ▲</span>
+                <span class="green">PHARMACOIN: +440% ▲▲▲</span>
+                <span class="red">SOUND_DESIGN_TEAM: -99.6% ▼</span>
+                <span class="red">PAGO_DIGNIDAD: RECHAZADO</span>
+                <span class="green">EGO_COIN: +99.6% ▲</span>
+                <span class="red">TRUST_INDEX: 0.00</span>
+                <span class="green">COBRO_BALA: COTIZANDO ▲</span>
+                <span>VALOR_PALABRA: -99.9% ▼</span>
+            </div>
+        </div>
+
+        <div class="ui-dig" id="ui-init">
+            <h1 id="dig-text">CLICK TO DIG</h1>
+            <div class="pit"><div id="fill"></div></div>
+            <p style="font-size: 0.6rem; letter-spacing: 5px; opacity: 0.4;">SCRUB THE WORD TO UNCOVER</p>
+        </div>
+
+        <div id="story-paper">
+            <p><strong>Please and Money</strong> sat in the cold silence. Money was drifting, his soul numb from Pentothal. Please, after months of begging for his due, looked into the fire and whispered:</p>
+            <div class="verses">
+                "Future is a scam… we only have today. Chasing tomorrow leads us astray. Moments are fleeting, Hold what you can. Live loud, love hard, Forget the plan. No recipe secures the steps we must take. Every choice is a ripple, every risk is a quake. The clock won’t pause for fear or delay. So burn bright now… Don’t fade into grey."
+            </div>
+            <p>Money just laughed. A dry, expensive sound. "You're a poet, Please? I'm a businessman. And business is over."</p>
+            <p style="text-align:right; font-weight:bold; margin-top:10px;">HAHAHA!</p>
+            <p style="margin-top:40px; font-size: 0.7rem; text-align:center; opacity:0.6;">[ PULL THE TRIGGER ]</p>
+        </div>
+
+        <div id="video-container">
+            <div class="player-wrapper">
+                <iframe id="yt-video-pf3" src="https://www.youtube.com/embed/EokHaoea7Dw?enablejsapi=1&autoplay=0&controls=1&rel=0" allow="autoplay"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="PF4_CONTENT">
+        <button class="btn-regreso-s1-pf4" onclick="Control.backToS1('PF4_CONTENT')">BACK</button>
+        <div id="flash-overlay"></div>
+        <div id="fixed-ruler"></div>
+
+        <div class="main-content">
+            <section class="hero">
+                <button id="recover-btn" onclick="PF4_Logic.iniciar()">RECOVER</button>
+                <div id="flap-container"></div>
+                
+                <section id="story-box-pf4">
+                    <div class="lang-line jp" id="t-jp"></div>
+                    <div class="lang-line es" id="t-es"></div>
+                    <div class="lang-line en" id="t-en"></div>
+                </section>
+            </section>
+
+            <div id="video-player-pf4">
+                <div id="mobile-ruler"></div>
+                <div class="video-ratio">
+                    <iframe id="yt-video-pf4" src="https://www.youtube.com/embed/68X0CQzZ6u4?enablejsapi=1" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div style="height: 140vh;"></div>
+        </div>
+    </div>
+
+    <div id="PF5_CONTENT">
+        <button class="btn-regreso-pf5" onclick="Control.backToS1('PF5_CONTENT')">EXIT MISSION</button>
+        <div class="pf5-container">
+            
+            <div id="start-screen-pf5" class="page-section-pf5 active-pf5">
+                <img src="PF5 FILES/ilus intro.jpg" class="title-img-pf5" alt="PF5 Intro">
+                <h2 class="blink-pf5" onclick="PF5_Logic.startStory()">> PRESS START <</h2>
+            </div>
+
+            <div id="story-screen-pf5" class="page-section-pf5">
+                <img id="scene-image-pf5" src="" alt="Cinematic">
+                <div class="dialog-box-pf5" onclick="PF5_Logic.nextFrame()">
+                    <span id="speaker-name-pf5" class="speaker-pf5"></span>
+                    <p id="dialog-text-pf5" class="text-pf5"></p>
+                    <div id="next-prompt-pf5" class="blink-pf5" style="position: absolute; bottom: 8px; right: 12px; font-size: 8px; color: var(--neon-cyan-pf5); visibility: hidden;">[ CLICK TO CONTINUE ]</div>
+                </div>
+            </div>
+
+            <div id="video-screen-pf5" class="page-section-pf5">
+                <h3 style="color: var(--neon-green-pf5); margin-bottom: 15px; font-size: 12px;">FILE: DROMEDARIO_REC.DAT</h3>
+                <div class="video-wrapper-pf5">
+                    <div id="player-pf5"></div>
+                </div>
+                <p class="blink-pf5" style="margin-top: 25px; font-size: 10px;" onclick="location.reload()">[ REINICIAR MISIÓN ]</p>
+            </div>
+
+            <div id="footer-pf5">KAMO RINCON - PF5 SERIES © 2026</div>
+        </div>
+    </div>
+
+    <div id="PF6_CONTENT">
+        <button id="btn-back-pf6" onclick="Control.backToS1('PF6_CONTENT')">CERRAR PF6</button>
+        <div id="f1-6" class="capa-pf6" style="opacity:1; background-image: url('PF6 FILES/fondo1 PF6.JPG');"></div>
+        <div id="f2-6" class="capa-pf6"></div>
+        <div class="overlay-pf6"></div>
+        <div id="texto-secuencia-pf6"></div>
+
+        <div id="grid-interactiva-pf6">
+            <div class="zona-pf6 z1-pf6" onclick="PF6_Logic.mostrarPopup(0)"></div>
+            <div class="zona-pf6 z2-pf6" onclick="PF6_Logic.mostrarPopup(1)"></div>
+            <div class="zona-pf6 z3-pf6" onclick="PF6_Logic.mostrarPopup(2)"></div>
+            <div class="zona-pf6 z4-pf6" onclick="PF6_Logic.mostrarPopup(3)"></div>
+        </div>
+
+        <div id="popup-master-pf6" class="popup-pf6">
+            <span class="close-btn-pf6" onclick="PF6_Logic.cerrarPopup()">×</span>
+            <div id="popup-inner-pf6" class="popup-content-pf6">
+                <div id="p-img-6" class="popup-img-pf6"></div>
+                <div id="p-text-6" class="popup-text-pf6"></div>
+            </div>
+            <div id="video-wrapper-pf6" style="display:none; height:100%;">
+                <iframe id="yt-player-pf6" width="100%" height="100%" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="lbox" class="modal">
+        <span class="cerrar" onclick="Control.cerrarGrande()">&times;</span>
+        <img id="imgLbox" class="modal-img">
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        /* --- YT API HANDLER FOR PF4 & PF5 --- */
+        let ytPlayerPF4, ytPlayerPF5;
+        function onYouTubeIframeAPIReady() {
+            ytPlayerPF4 = new YT.Player('yt-video-pf4', {
+                events: {
+                    'onStateChange': (e) => {
+                        if (e.data === YT.PlayerState.ENDED) {
+                            document.getElementById('PF4_CONTENT').style.overflow = 'auto';
+                        }
+                    }
+                }
+            });
+            ytPlayerPF5 = new YT.Player('player-pf5', {
+                height: '360',
+                width: '640',
+                videoId: 'p65dLq46tcE',
+                playerVars: { 'autoplay': 0, 'modestbranding': 1, 'rel': 0 }
+            });
+        }
+
+        /* --- LÓGICA CORE --- */
+        const Control = {
+            secret: "KAMO", timeLeft: 10, timer: null,
+            init: function() { this.buildGrid(); this.startTimer(); },
+            speak: function(t) {
+                const m = new SpeechSynthesisUtterance(t);
+                m.lang = 'es-ES'; m.rate = 1.1; m.pitch = 0.3;
+                window.speechSynthesis.speak(m);
+            },
+            buildGrid: function() {
+                const grid = document.getElementById('gridA1');
+                const pool = ["X", "7", "∫", "√", "Δ", "π", "∞", "Σ", "1", "4", "9", "0", "3", "µ", "Ω"];
+                let cells = Array.from({length: 100}, () => `<div class="cell">${pool[Math.floor(Math.random()*pool.length)]}</div>`);
+                const startPos = 54; 
+                for(let i=0; i<this.secret.length; i++) cells[startPos + i] = `<div class="cell target-kamo">${this.secret[i]}</div>`;
+                grid.innerHTML = cells.join('');
+            },
+            startTimer: function() {
+                this.timer = setInterval(() => {
+                    this.timeLeft--;
+                    if(document.getElementById('timer-a1')) document.getElementById('timer-a1').innerText = this.timeLeft;
+                    if(this.timeLeft <= 0) this.fail();
+                }, 1000);
+            },
+            checkA1: function() {
+                if(document.getElementById('passA1').value.toUpperCase().replace(/\s+/g, '') === this.secret) {
+                    clearInterval(this.timer);
+                    this.speak("Kamo soma");
+                    document.getElementById('A1').classList.remove('v');
+                    document.getElementById('TRANS1').classList.add('v');
+                    setTimeout(() => {
+                        document.getElementById('TRANS1').classList.remove('v');
+                        document.getElementById('S1').classList.add('v');
+                    }, 500);
+                } else { alert("DENIED"); }
+            },
+            fail: function() {
+                clearInterval(this.timer);
+                document.getElementById('a1-content').style.display = 'none';
+                document.getElementById('error-screen').style.display = 'block';
+            },
+            openPF1: function() {
+                document.getElementById('S1').classList.remove('v');
+                document.getElementById('PF1_CONTENT').style.display = 'flex';
+                window.scrollTo(0,0);
+            },
+            openPF2: function() {
+                document.getElementById('S1').classList.remove('v');
+                document.getElementById('PF2_CONTENT').style.display = 'flex';
+                PF2_Logic.init();
+            },
+            openPF3: function() {
+                document.getElementById('S1').classList.remove('v');
+                document.getElementById('PF3_CONTENT').style.display = 'flex';
+            },
+            openPF4: function() {
+                document.getElementById('S1').classList.remove('v');
+                document.getElementById('PF4_CONTENT').style.display = 'block';
+            },
+            openPF5: function() {
+                document.getElementById('S1').classList.remove('v');
+                document.getElementById('PF5_CONTENT').style.display = 'block';
+            },
+            openPF6: function() {
+                document.getElementById('S1').classList.remove('v');
+                document.getElementById('PF6_CONTENT').style.display = 'block';
+                PF6_Logic.start();
+            },
+            /* AJUSTE TEMA 1: Detener video de PF4 al presionar BACK */
+            backToS1: function(id) {
+                if(id === 'PF3_CONTENT') {
+                    document.getElementById('yt-video-pf3').contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                }
+                if(id === 'PF1_CONTENT') {
+                    document.getElementById('yt-video-pf1').contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                }
+                if(id === 'PF4_CONTENT' && ytPlayerPF4) {
+                    ytPlayerPF4.pauseVideo();
+                    ytPlayerPF4.stopVideo(); // Detención total
+                }
+                if(id === 'PF5_CONTENT' && ytPlayerPF5) {
+                    ytPlayerPF5.pauseVideo();
+                    ytPlayerPF5.stopVideo();
+                }
+                if(id === 'PF6_CONTENT') {
+                    PF6_Logic.stop();
+                }
+                document.getElementById(id).style.display = 'none';
+                document.getElementById('S1').classList.add('v');
+            },
+            verGrande: function(s) { 
+                document.getElementById("lbox").style.display = "flex"; 
+                document.getElementById("imgLbox").src = s; 
+            },
+            cerrarGrande: function() { 
+                document.getElementById("lbox").style.display = "none"; 
+            }
+        };
+
+        /* --- LÓGICA PF2 --- */
+        const PF2_Logic = {
+            folderPath: "PF2 FILES/",
+            init: function() {
+                const fullStory = "INFORME PF2: El Agente Kamisky ha sido neutralizado. La traición fue ejecutada por su propia amante, la Queen Evil LeLe, quien filtró su ubicación tras serle infiel con un contacto del bajo mundo. El Coronel Urrego, el militar más corrupto de la región, ordenó a Pipe Lucho la destrucción inmediata de toda evidencia digital. Utilizando imanes de neodimio grado Waldorf, Pipe Lucho borró sistemáticamente todas las tarjetas en la Station Epskein. El CEO Xi Wu financió el silencio legal a través de la legisladora Christine Ice. Kamisky espera ejecución en una celda de máxima seguridad, pero él es la evidencia viva: los datos permanecen grabados en su propia memoria biológica como un efecto secundario del experimento Waldorf.";
+                const idiomas = [
+                    { l: "ESPAÑOL", t: fullStory },
+                    { l: "ENGLISH", t: "REPORT PF2: Agent Kamisky has been neutralized. The betrayal was executed by his lover, Queen Evil LeLe, who leaked his location after an affair. Colonel Urrego ordered Pipe Lucho to destroy all digital evidence. Using Waldorf magnets, Pipe Lucho wiped the cards at Station Epskein. CEO Xi Wu funded the legal silence. Kamisky awaits execution, but he is the living evidence: data remains in his biological memory." },
+                    { l: "日本語", t: "報告書PF2：カミスキー捜査官は無力化されました。裏切りは愛人のクイーン・イービル・レレによって実行され、彼女は浮気相手に彼の居場所を漏らしました。軍のウレゴ大佐は、パイプ・ルチョにデジタル証拠の全廃棄を命じ、ワルドルフ磁石で消去しました。カミスキーは処刑を待っていますが、データは彼の生物学的記憶に残っており、彼自身が生きている証拠です。" },
+                    { l: "中文", t: "报告 PF2：卡米斯基探员已被制服。背叛是由他的情人 Queen Evil LeLe 实施的。腐败的 Urrego 上校命令 Pipe Lucho 销毁所有数字证据。Pipe Lucho 使用瓦尔多夫级磁铁删除了 Epskein 站的所有卡片。CEO Xi Wu 资助了法律上的沉默。卡米斯基正在等待处决，但他就是活生生的证据：数据保留在他的生物记忆中。" },
+                    { l: "РУССКИЙ", t: "ОТЧЕТ PF2: Агент Камиский нейтрализован. Предательство совершено его любовницей ЛеЛе. Полковник Уррего приказал уничтожить все улики. Пайп Лучо стер данные магнитами Вальдорф. Си У финансировал молчание. Камиский ждет казни, но он — живое доказательство: данные в его биологической памяти." },
+                    { l: "FRANÇAIS", t: "RAPPORT PF2: L'agent Kamisky a été neutralisé. La trahison a été exécutée par sa maîtresse, Queen Evil LeLe. Le colonel Urrego a ordonné à Pipe Lucho de détruire les preuves. Le PDG Xi Wu a financé le silence. Kamisky attend son exécution, pero il est la preuve vivante: les données restent dans sa mémoire biologique." },
+                    { l: "PORTUGUÊS", t: "RELATÓRIO PF2: Agente Kamisky neutralizado. Traição de Queen Evil LeLe. Coronel Urrego ordenou a destruição das provas con ímãs Waldorf. Xi Wu financiou o silêncio legal. Kamisky espera ejecución; os datos vivem na sua memória biológica." },
+                    { l: "NEDERLANDS", t: "RAPPORT PF2: Agent Kamisky geneutraliseerd door verraad van Queen Evil LeLe. Kolonel Urrego beval het wissen van bewijs con Waldorf-magneten. Kamisky is het levende bewijs: data zit in zijn geheugen." },
+                    { l: "POLSKI", t: "RAPORT PF2: Agent Kamisky zneutralizowany. Zdrada Queen Evil LeLe. Pułkownik Urrego nakazał zniszczenie dowodów magnesami Waldorf. Dane pozostają w pamięci biologicznej Kamiskiego." },
+                    { l: "HINDI", t: "रिपोर्ट PF2: एजेंट कामिस्की को मार दिया गया है। धोखा उसकी प्रेमिका लेले ने दिया था। कर्नल उरेगो ने सबूत नष्ट करने का आदेश दिया। डेटा उसकी जैविक स्मृति में बना हुआ है।" },
+                    { l: "ESPERANTO", t: "RAPORTO PF2: Agento Kamisky estis senpoviĝinta. Perfido de Queen Evil LeLe post malfideleco. Kolonelo Urrego ordonis detrui la indicon. Kamisky estas la vivanta pruvo." },
+                    { l: "MAYA", t: "INFORME PF2: Kamisky tu p'ataj tumen Queen Evil LeLe. Pipe Lucho tu yustaj le tarjeta'ob yéetel imanes Waldorf tumen u t'aan Urrego. Leti'e' u jaajil ti' u tuukul." },
+                    { l: "ROBOTINO", t: "01001001 01001110 01000110 01010010 01001111 00101110 00100000 01001011 01000001 01001101 01001001 01010011 01001011 01011001 00100000 01010100 01010010 01000001 01001001 01010100 01001111 01010010 00101110" }
+                ];
+                const evidencias = [
+                    { i: 'epskein station.jpg', t: 'ESTACIÓN EPSKEIN', es: 'Este fue el epicentro del borrado masivo. El Ingeniero Pipe Lucho instaló bobinas magnéticas ocultas en los conductos de ventilación. Cuando el Teniente Coronel Urrego dio la orden, el pulso Waldorf vaporizó los datos de seguridad, eliminando los registros de entrada de la Reina LeLe.', en: 'The epicenter of the mass wipe. Engineer Pipe Lucho installed hidden magnetic coils in the vents. On Lieutenant Colonel Urrego\'s order, the Waldorf pulse vaporized security data, erasing Queen LeLe\'s entry logs.' },
+                    { i: 'ceo.jpg', t: 'DIRECTOR EJECUTIVO XI WU', es: 'El arquitecto financiero detrás de la caída de Kamisky. Xi Wu no solo quería la tarjeta, quería eliminar la tecnología biológica que Kamisky portaba. Wu financió la red de espionaje Waldorf para controlar el mercado de memorias neuronales.', en: 'The financial architect behind Kamisky\'s fall. Xi Wu didn\'t just want the card; he wanted to eliminate the biological technology Kamisky carried. Wu funded the Waldorf network.' },
+                    { i: 'AGENTE%20KAMISKY%20INTO%20THE%20JAIL.jpg', t: 'CELDA DE MÁXIMA SEGURIDAD', es: 'Kamisky permanece en la celda 402. Los guardias tienen órdenes de no hablarle. Lo que no saben es que cada vez que parpadea, fragmentos del código de la tarjeta aparecen en su retina como destellos de luz.', en: 'Kamisky remains in cell 402. Guards are ordered not to speak to him. What they don\'t know is that code fragments appear on his retina like flashes of light every time he blinks.' },
+                    { i: 'QUEEN%20OF%20EVIL%20LeLe.jpg', t: 'REINA EVIL LELE', es: 'Ella fue el caballo de Troya. Durante meses, LeLe fingió lealtad a Kamisky mientras recolectaba sus debilidades. Su infidelidad con el contacto de Urrego fue puramente táctica para entregar la llave de acceso.', en: 'She was the Trojan Horse. For months, LeLe feigned loyalty while collecting Kamisky\'s weaknesses. Her affair with Urrego\'s contact was purely tactical to hand over the access key.' },
+                    { i: 'Guilian%20Arthuro%20pipe%20lucho.jpg', t: 'INGENIERO PIPE LUCHO', es: 'Un genio caído en desgracia. Lucho fue el único capaz de calibrar los imanes Waldorf para que afectaran solo el silicio y no el tejido biológico. Lo hizo bajo amenaza de muerte hacia su familia.', en: 'A disgraced genius. Lucho was the only one capable of calibrating Waldorf magnets to affect only silicon and not biological tissue. He did it under death threats.' },
+                    { i: 'Teniente%20coronel%20Urrego%20el%20mas%20corrupto.jpg', t: 'TENIENTE CORONEL URREGO', es: 'El oficial más corrupto de la región y brazo ejecutor de Xi Wu. Supervisó personalmente la destrucción de los archivos en la estación. Su lealtad no es a la nación, sino al dinero del CEO.', en: 'The most corrupt officer in the region and Xi Wu\'s enforcer. He personally supervised the destruction of files at the station. His loyalty is to the CEO\'s money.' },
+                    { i: 'Jhonny%20Legrant%20Acusado%20de%20robo%20de%20Imanes.jpg', t: 'CONTRABANDISTA JHONNY LEGRANT', es: 'El contrabandista que trajo los componentes Waldorf desde las colonias externas. Fue arrestado para calmar a la prensa, pero fue liberado por la puerta trasera apenas las cámaras se apagaron.', en: 'The smuggler who brought Waldorf components from the outer colonies. Arrested to calm the press, but released through the back door as soon as cameras were off.' },
+                    { i: 'Christine%20Ice%20Mcgregor%20degisladora%20Humanoide.jpg', t: 'LEGISLADORA CHRISTINE ICE', es: 'Legisladora con un secreto mortal: es un prototipo humanoide avanzado de Xi Wu. Su misión es legalizar las "limpiezas" de Urrego y asegurar que el experimento Waldorf nunca sea cuestionado judicialmente.', en: 'Legislator with a deadly secret: she is a Xi Wu advanced humanoid prototype. Her mission is to legalize Urrego\'s "cleanups" and protect the Waldorf experiment.' },
+                    { i: 'AGENTE%20KAMISKY%20WORK%20outside.jpg', t: 'ÚLTIMO OPERATIVO DE CAMPO', es: 'Esta imagen fue captada por un informante minutos antes del ataque. Kamisky llevaba consigo el disco duro original. En ese momento, no sabía que su señal de GPS estaba siendo transmitida en vivo.', en: 'Captured by an informant minutes before the attack. Kamisky was carrying the original hard drive. He didn\'t know his GPS signal was being broadcast live.' },
+                    { i: 'AGENTE%20KAMISKY.jpg', t: 'EVIDENCIA BIOLÓGICA VIVA', es: 'Kamisky ya no es solo un hombre, es un archivo. El choque magnético Waldorf fusionó los datos de la tarjeta con su corteza cerebral. Mientras respire, la verdad sobre el CEO Xi Wu existe.', en: 'Kamisky is no longer just a man; he is an archive. The Waldorf magnetic shock fused the card data with his cerebral cortex. As long as he breathes, the truth exists.' }
+                ];
+                const histDiv = document.getElementById('historia-total');
+                histDiv.innerHTML = "";
+                idiomas.forEach(id => {
+                    histDiv.innerHTML += `<div class="pf2-lang-block"><span class="pf2-label">${id.l}</span>${id.t}</div>`;
+                });
+                const fotosDiv = document.getElementById('contenedor-fotos');
+                fotosDiv.innerHTML = "";
+                let side = 'left';
+                evidencias.forEach(ev => {
+                    const div = document.createElement('div');
+                    div.className = 'slide';
+                    div.innerHTML = `<img src="${this.folderPath}${ev.i}">`;
+                    div.onclick = (e) => {
+                        const pop = document.getElementById('popup-lateral');
+                        document.getElementById('img-pop').src = this.folderPath + ev.i;
+                        document.getElementById('txt-pop').innerHTML = `
+                            <div style="color:red; margin-bottom:15px; font-size: 1.2rem; border-bottom: 1px solid #ddd; padding-bottom:5px;">${ev.t}</div>
+                            <div style="margin-bottom:15px;"><strong>ESPAÑOL:</strong> ${ev.es}</div>
+                            <div style="color:#555;"><strong>ENGLISH:</strong> ${ev.en}</div>
+                        `;
+                        pop.style.display = 'flex';
+                        pop.style.top = '10%';
+                        if(side === 'left') { pop.style.left = '2%'; pop.style.right = 'auto'; side = 'right'; }
+                        else { pop.style.right = '2%'; pop.style.left = 'auto'; side = 'left'; }
+                    };
+                    fotosDiv.appendChild(div);
+                });
+            },
+            openVideo: function() {
+                document.getElementById('video-overlay').style.display = 'flex';
+                document.getElementById('yt-player').src = "https://www.youtube.com/embed/tVN4THX5J0Y?autoplay=1";
+            },
+            closeVideo: function() {
+                document.getElementById('video-overlay').style.display = 'none';
+                document.getElementById('yt-player').src = "";
+            }
+        };
+
+        /* --- LÓGICA PF3 --- */
+        let pf3_progress = 0;
+        let pf3_unlocked = false;
+        let pf3_finished = false;
+        const PF3_Init = () => {
+            const digBtn = document.getElementById('dig-text');
+            const fill = document.getElementById('fill');
+            const uiInit = document.getElementById('ui-init');
+            const paper = document.getElementById('story-paper');
+            const videoCont = document.getElementById('video-container');
+            const flash = document.getElementById('flash');
+            const sfxDig = document.getElementById('sfx-dig');
+            const sfxShot = document.getElementById('sfx-shot');
+            digBtn.addEventListener('mousedown', () => { if(pf3_finished) return; pf3_unlocked = true; digBtn.innerText = "SCRUB"; });
+            digBtn.addEventListener('mousemove', () => {
+                if (pf3_unlocked && pf3_progress < 100) {
+                    pf3_progress += 1.6;
+                    fill.style.width = pf3_progress + "%";
+                    digBtn.classList.add('shaking');
+                    sfxDig.volume = 0.8; if(sfxDig.paused) sfxDig.play();
+                    clearTimeout(window.t_pf3);
+                    window.t_pf3 = setTimeout(() => { digBtn.classList.remove('shaking'); sfxDig.pause(); }, 80);
+                    if (pf3_progress >= 100) { uiInit.style.display = 'none'; paper.style.opacity = "1"; paper.style.pointerEvents = "all"; document.body.style.cursor = "crosshair"; }
+                }
+            });
+            window.addEventListener('mousedown', () => {
+                if (paper.style.opacity === "1" && !pf3_finished && document.getElementById('PF3_CONTENT').style.display === 'flex') {
+                    pf3_finished = true; sfxShot.volume = 1.0; sfxShot.play();
+                    flash.style.opacity = "1"; setTimeout(() => { flash.style.opacity = "0"; }, 150);
+                    paper.style.opacity = "0"; document.getElementById('ticker').style.display = "none";
+                    videoCont.classList.add('up');
+                    setTimeout(() => { document.getElementById('yt-video-pf3').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*'); }, 1000);
+                }
+            });
+        };
+
+        /* --- LÓGICA PF4 --- */
+        const PF4_Logic = {
+            texts: {
+                jp: "フエマチカ... パスワードを忘れた。696兆ビットコインが眠っている。安定させるには、スクロールして「6」を同期してください。",
+                es: "JUEMACHICA... se me olvidó la contraseña. Los 696 trillones de bitcoins duermen en el código. Deslice hacia abajo y sincronice el '6' para desbloquear.",
+                en: "JUEMACHICA... I forgot the password. 696 trillion bitcoins are dormant in the code. Scroll down and sync the '6' to unlock."
+            },
+            isLocked: true,
+            iniciar: function() {
+                document.getElementById('recover-btn').style.display = 'none';
+                document.getElementById('flap-container').style.display = 'block';
+                document.getElementById('fixed-ruler').style.display = 'block';
+                this.crearRegla('fixed-ruler', 'var(--neon-cyan)', 0);
+                this.lanzarFlaps();
+            },
+            crearRegla: function(id, color, startValue) {
+                const container = document.getElementById(id);
+                container.innerHTML = '';
+                for (let i = 0; i < 40; i++) {
+                    const val = startValue + i;
+                    const tick = document.createElement('div');
+                    tick.className = 'tick'; tick.style.top = (i * 60) + 'px'; tick.style.color = color;
+                    const label = document.createElement('div');
+                    label.className = 'tick-label' + (val === 6 ? ' label-6' : ''); 
+                    label.innerText = val; tick.appendChild(label); container.appendChild(tick);
+                }
+            },
+            lanzarFlaps: function() {
+                const msg = "APRENDE A OLVIDAR";
+                msg.split('').forEach((char, i) => {
+                    const span = document.createElement('span'); span.className = 'flap';
+                    document.getElementById('flap-container').appendChild(span);
+                    let ciclos = 0;
+                    let t = setInterval(() => {
+                        span.innerText = Math.floor(Math.random() * 10);
+                        if (ciclos++ > 15 + i) { clearInterval(t); span.innerText = char; if (i === msg.length - 1) setTimeout(this.expandirCaja.bind(this), 800); }
+                    }, 60);
+                });
+            },
+            expandirCaja: function() {
+                const box = document.getElementById('story-box-pf4'); box.style.display = 'block';
+                setTimeout(() => { box.style.height = '260px'; box.style.padding = '35px 40px'; setTimeout(this.mostrarHistoria.bind(this), 800); }, 50);
+            },
+            mostrarHistoria: function() {
+                document.querySelectorAll('#PF4_CONTENT .lang-line').forEach(l => l.style.opacity = '1');
+                let i = 0;
+                const tEs = document.getElementById('t-es'), tEn = document.getElementById('t-en'), tJp = document.getElementById('t-jp');
+                const maxLength = Math.max(this.texts.es.length, this.texts.en.length, this.texts.jp.length);
+                const stream = () => {
+                    if (i < maxLength) {
+                        if (this.texts.jp[i]) tJp.innerHTML += this.texts.jp[i];
+                        if (this.texts.es[i]) tEs.innerHTML += this.texts.es[i];
+                        if (this.texts.en[i]) tEn.innerHTML += this.texts.en[i];
+                        i++; setTimeout(stream, 30);
+                    } else {
+                        setTimeout(() => {
+                            document.getElementById('video-player-pf4').style.display = 'block';
+                            this.crearRegla('mobile-ruler', 'var(--neon-gold)', 6);
+                            document.getElementById('PF4_CONTENT').addEventListener('scroll', this.checkSync.bind(this));
+                        }, 800);
+                    }
+                };
+                stream();
+            },
+            checkSync: function() {
+                if (!this.isLocked) return;
+                const videoRect = document.getElementById('video-player-pf4').getBoundingClientRect();
+                if (Math.abs(videoRect.top - 349) < 10) this.triggerUnlock();
+            },
+            triggerUnlock: function() {
+                this.isLocked = false;
+                document.getElementById('PF4_CONTENT').style.overflow = 'hidden'; 
+                document.getElementById('flash-overlay').style.animation = "globalFlash 0.6s ease-out forwards";
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+                o.type = 'square'; o.frequency.setValueAtTime(220, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.3);
+                g.gain.setValueAtTime(0.3, audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.3);
+                document.getElementById('yt-video-pf4').style.opacity = "1";
+                if(ytPlayerPF4 && ytPlayerPF4.playVideo) ytPlayerPF4.playVideo();
+            }
+        };
+
+        /* --- LÓGICA PF5 --- */
+        const PF5_Logic = {
+            storyFrames: [
+                { img: "PF5 FILES/ilus chotzu y Jaicol.jpg", speaker: "CHOT-ZU", text: "El desierto no perdona, Jaicol. Entrégame la memoria USB ahora mismo." },
+                { img: "PF5 FILES/ilus usb.jpg", speaker: "SISTEMA", text: "ADVERTENCIA: Archivos encriptados detectados. Iniciando decodificación de 'DROMEDARIO'..." },
+                { img: "PF5 FILES/ilus Jhonny end.jpg", speaker: "ASAKO", text: "Todo está listo. Jhonny, que empiece la música. Que el mundo vea lo que grabamos." }
+            ],
+            currentFrame: 0,
+            startStory: function() {
+                document.getElementById('start-screen-pf5').classList.remove('active-pf5');
+                document.getElementById('story-screen-pf5').classList.add('active-pf5');
+                this.updateFrame();
+            },
+            updateFrame: function() {
+                const frame = this.storyFrames[this.currentFrame];
+                document.getElementById('scene-image-pf5').src = frame.img;
+                document.getElementById('speaker-name-pf5').innerText = frame.speaker;
+                document.getElementById('next-prompt-pf5').style.visibility = 'hidden';
+
+                let i = 0;
+                const textElement = document.getElementById('dialog-text-pf5');
+                textElement.innerText = "";
+                const timer = setInterval(() => {
+                    if (i < frame.text.length) {
+                        textElement.innerText += frame.text.charAt(i);
+                        i++;
+                    } else {
+                        clearInterval(timer);
+                        document.getElementById('next-prompt-pf5').style.visibility = 'visible';
+                    }
+                }, 30);
+            },
+            nextFrame: function() {
+                if (document.getElementById('next-prompt-pf5').style.visibility === 'visible') {
+                    this.currentFrame++;
+                    if (this.currentFrame < this.storyFrames.length) {
+                        this.updateFrame();
+                    } else {
+                        this.showVideo();
+                    }
+                }
+            },
+            showVideo: function() {
+                document.getElementById('story-screen-pf5').classList.remove('active-pf5');
+                document.getElementById('video-screen-pf5').classList.add('active-pf5');
+                if (ytPlayerPF5) ytPlayerPF5.playVideo();
+            }
+        };
+
+        /* --- LÓGICA PF6 (LA ÚLTIMA PIEZA) --- */
+        const PF6_Logic = {
+            indice: 0,
+            activa: 0,
+            intervaloLoop: null,
+            secuencia: [
+                { img: 'PF6 FILES/fondo1 PF6.JPG', txt: 'The' },
+                { img: 'PF6 FILES/fondo2 PF6.JPG', txt: 'Sun' },
+                { img: 'PF6 FILES/fondo3 PF6.JPG', txt: 'Amy' },
+                { img: 'PF6 FILES/fondo4 PF6.JPG', txt: 'Son' },
+                { img: 'PF6 FILES/FONDO FINAL PF6.JPG', txt: '' }
+            ],
+            contenidos: [
+                { 
+                    img: 'PF6 FILES/laprida.JPG', 
+                    txt: `El asfalto de Microcentro no perdona,\nes un espejo negro que devuelve el calor de enero,\nmientras las enciclopedias pesan en el brazo\ncomo tomos de una historia que a nadie le interesa leer.\n2011 fue un pasillo largo y sin aire.\nCaminar por Florida esquivando el rastro del bachero,\nese vapor de platos sucios que se pega a la piel\ny que juraste, entre dientes, no volver a respirar.\nPero el hambre no sabe de promesas.\nY en la esquina, el traje multicolor se vuelve armadura:\nla nariz roja, el maquillaje que el sudor agrieta,\ny esa sonrisa pintada que es, en realidad, un grito.\nThe Sun Amy Son.\nHijo del sol y del asfalto,\ncantándole al cielo blanco de Buenos Aires,\ndonde el payaso de restaurante guarda el secreto\nde quien vende alegría para comprarse el mañana.`
+                },
+                {
+                    img: 'PF6 FILES/arbol.JPG',
+                    txt: `都心の街のアスファルトは容赦ない。\nそれは1月の熱を跳ね返す黒い鏡。\n腕の中の百科事典は重く、\n誰も読みたがらない歴史の巻物のよう。\n2011年は、風の通らない長い廊下だった。\nフロリダ通りを歩き、皿洗いの跡を避ける。\n肌に張り付く汚れた皿の湯気、\n二度と吸いたくないと歯を食いしばって誓ったもの。\nだが、飢えは約束を知らない。\n角に立てば、極彩色の服が鎧に変わる。\n赤い鼻、汗でひび割れる化粧。\n描かれたその笑顔は、実際には叫びなのだ。\nThe Sun Amy Son.\n太陽とアスファルトの息子、\nブエノスアイレスの白い空に向かって歌う。\nレストランの道化師がその秘密を守る場所。\n明日を買うために、喜びを売る者の秘密を。`
+                },
+                {
+                    img: 'PF6 FILES/puerta.JPG',
+                    txt: `The asphalt of Microcentro shows no mercy,\nit's a black mirror reflecting the January heat,\nwhile the width of the encyclopedias weigh heavy on the arm\nlike volumes of a history no one cares to read.\n2011 was a long hallway without air.\nWalking through Florida street dodging the dishwasher's trail,\nthat steam of dirty dishes that clings to the skin\nand you swore, through gritted teeth, never to breathe again.\nBut hunger knows no promises.\nAnd on the corner, the multicolored suit becomes armor:\nthe red nose, the makeup that sweat cracks,\nand that painted smile which is, in reality, a scream.\nThe Sun Amy Son.\nSon of the sun and the asphalt,\nsinging to the white sky of Buenos Aires,\nwhere the restaurant clown keeps the secret\nof the one who sells joy to buy himself a tomorrow.`
+                },
+                { video: "https://www.youtube.com/embed/5Ssp64Ya3tg?autoplay=1" }
+            ],
+            start: function() {
+                this.indice = 0;
+                const capas = [document.getElementById('f1-6'), document.getElementById('f2-6')];
+                capas[0].style.opacity = 1;
+                capas[1].style.opacity = 0;
+                this.intervaloLoop = setInterval(() => this.cambiar(), 4000);
+                this.cambiar();
+            },
+            stop: function() {
+                clearInterval(this.intervaloLoop);
+                document.getElementById('yt-player-pf6').src = "";
+            },
+            cambiar: function() {
+                if (this.indice < this.secuencia.length) {
+                    const actual = this.secuencia[this.indice];
+                    const capas = [document.getElementById('f1-6'), document.getElementById('f2-6')];
+                    const texto = document.getElementById('texto-secuencia-pf6');
+                    
+                    capas[this.activa].style.backgroundImage = `url('${actual.img}')`;
+                    capas[this.activa].style.opacity = 1;
+                    capas[1 - this.activa].style.opacity = 0;
+                    texto.style.opacity = 0;
+                    
+                    setTimeout(() => {
+                        texto.innerText = actual.txt;
+                        if(actual.txt) texto.style.opacity = 1;
+                    }, 1000);
+                    
+                    if (this.indice === this.secuencia.length - 1) {
+                        setTimeout(() => document.getElementById('grid-interactiva-pf6').style.display = 'grid', 2000);
+                        clearInterval(this.intervaloLoop);
+                    }
+                    this.indice++;
+                    this.activa = 1 - this.activa;
+                }
+            },
+            mostrarPopup: function(n) {
+                const master = document.getElementById('popup-master-pf6');
+                const inner = document.getElementById('popup-inner-pf6');
+                const videoWrap = document.getElementById('video-wrapper-pf6');
+                master.style.display = 'block';
+
+                if (n === 3) {
+                    inner.style.display = 'none';
+                    videoWrap.style.display = 'block';
+                    document.getElementById('yt-player-pf6').src = this.contenidos[n].video;
+                } else {
+                    videoWrap.style.display = 'none';
+                    inner.style.display = 'flex';
+                    document.getElementById('p-img-6').style.backgroundImage = `url('${this.contenidos[n].img}')`;
+                    const textElem = document.getElementById('p-text-6');
+                    textElem.innerText = "";
+                    let i = 0;
+                    const palabras = this.contenidos[n].txt.split(' ');
+                    const escribir = () => {
+                        if (i < palabras.length) {
+                            textElem.innerText += palabras[i] + " ";
+                            i++;
+                            setTimeout(escribir, 50);
+                        }
+                    }
+                    escribir();
+                }
+            },
+            cerrarPopup: function() {
+                document.getElementById('popup-master-pf6').style.display = 'none';
+                document.getElementById('yt-player-pf6').src = "";
+            }
+        };
+
+        window.onclick = function(e) { if (e.target == document.getElementById("lbox")) Control.cerrarGrande(); }
+        window.onload = () => { Control.init(); PF3_Init(); };
+    </script>
+</body>
+</html>
