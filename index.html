@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
     <title>Modular Core - Stable Manifest [FULL INTEGRATION PF1-PF6]</title>
     <style>
         /* --- ESTILOS ORIGINALES CORE + PF1 --- */
@@ -49,7 +49,7 @@
         }
 
         .door-container { 
-            display: flex; gap: 20px; margin-bottom: 40px; margin-top: 20px; 
+            display: flex; gap: 20px; margin-bottom: 20px; margin-top: 100px; /* AJUSTE 1: Botones más abajo */
             flex-wrap: wrap; justify-content: center; 
         }
 
@@ -90,8 +90,16 @@
         .item-botin { background: #fff; padding: 10px 10px 40px 10px; width: 180px; box-shadow: 5px 15px 25px rgba(0,0,0,0.3); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: zoom-in; position: relative; }
         .item-botin img { width: 100%; height: 180px; object-fit: cover; display: block; }
         .item-botin:hover { transform: scale(1.7); z-index: 500; }
-        .popup-info { position: absolute; bottom: 105%; left: 50%; transform: translateX(-50%); width: 240px; background: rgba(0, 18, 25, 0.98); color: var(--gold); padding: 15px; border: 2px solid var(--gold); border-radius: 5px; font-size: 0.85rem; visibility: hidden; opacity: 0; transition: 0.3s; text-align: center; }
-        .item-botin:hover .popup-info { visibility: visible; opacity: 1; }
+        
+        /* AJUSTE PF1: Cambio de posicion para no perder contenido del popup */
+        .popup-info { 
+            position: absolute; bottom: 0%; left: 50%; transform: translate(-50%, 0%); 
+            width: 240px; background: rgba(0, 18, 25, 0.98); color: var(--gold); padding: 15px; 
+            border: 2px solid var(--gold); border-radius: 5px; font-size: 0.85rem; 
+            visibility: hidden; opacity: 0; transition: 0.3s; text-align: center; z-index: 600;
+        }
+        .item-botin:hover .popup-info { visibility: visible; opacity: 1; transform: translate(-50%, -20px); }
+
         .btc { color: var(--btc); font-weight: bold; }
         .modal { display: none; position: fixed; z-index: 3000; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; }
         .modal-img { max-width: 80%; max-height: 85%; border: 6px solid var(--gold); }
@@ -170,7 +178,10 @@
         .ticker-content span { margin-right: 50px; }
         .red { color: #ff4444; }
         .green { color: #44ff44; }
-        .ui-dig { text-align: center; z-index: 15; position: relative; }
+        .ui-dig { 
+            text-align: center; z-index: 15; position: absolute; /* AJUSTE 3: Centro pantalla */
+            top: 50%; left: 50%; transform: translate(-50%, -50%); 
+        }
         #dig-text { font-size: 5rem; letter-spacing: 20px; cursor: pointer; transition: transform 0.1s; display: block; text-shadow: 0 0 20px #fff; }
         .pit { width: 300px; height: 1px; background: #222; margin: 20px auto; overflow: hidden; }
         #fill { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; }
@@ -460,6 +471,55 @@
         .close-btn-pf6 { position: absolute; top: 10px; right: 20px; cursor: pointer; font-size: 2rem; color: #D9C5B2; }
 
         #btn-back-pf6 { position: fixed; top: 20px; left: 20px; z-index: 10002; background: rgba(0, 0, 0, 0.6); color: #D9C5B2; border: 1px solid #D9C5B2; padding: 10px 15px; cursor: pointer; font-family: 'Courier Prime'; }
+
+        /* --- AJUSTES RESPONSIVE (CELULARES Y TABLETS) --- */
+        @media (max-width: 768px) {
+            /* Timer y Grilla A1 */
+            #timer-a1 { font-size: 3rem; }
+            .word-grid { grid-template-columns: repeat(10, 30px); gap: 2px; }
+            .cell { width: 30px; height: 30px; font-size: 0.8rem; }
+            .input-access { width: 90%; font-size: 1.2rem; }
+
+            /* S1 - Puertas */
+            .door-container { gap: 10px; margin-top: 40px; }
+            .ring-door { width: 80px; height: 80px; font-size: 0.6rem; }
+            .manifest-grid { grid-template-columns: repeat(2, 1fr); } /* 2 columnas en lugar de 4 */
+            .robotino { grid-column: span 2; }
+
+            /* PF1 - Pergamino */
+            .pergamino { padding: 20px; }
+            .pergamino h1 { font-size: 3rem; }
+            .mando-row { flex-direction: column; gap: 20px; }
+            .marco-oro-grande img { width: 100%; height: auto; max-width: 250px; }
+            .historia-box { height: 300px; font-size: 0.9rem; }
+            .item-botin:hover { transform: scale(1.1); } /* Reducir zoom en móvil */
+
+            /* PF2 - Pizarra */
+            .pizarra-layout { width: 95%; margin-top: 50px; }
+            .pizarra-layout h1 { font-size: 1.2rem; letter-spacing: 5px; }
+            .grid-fotos { grid-template-columns: repeat(3, 1fr); }
+            #popup-lateral { width: 90%; left: 5% !important; right: 5% !important; height: auto; max-height: 80vh; overflow-y: auto; }
+
+            /* PF3 - Desierto */
+            #dig-text { font-size: 2.5rem; letter-spacing: 10px; }
+            .player-wrapper { width: 95%; }
+
+            /* PF4 - Bitcoin */
+            #video-player-pf4 { width: 95%; margin-top: 200px; }
+            .flap { font-size: 1.2rem; padding: 5px; min-width: 25px; }
+            #story-box-pf4 { padding: 15px; font-size: 0.8rem; }
+
+            /* PF5 - Intro */
+            .dialog-box-pf5 { height: 160px; }
+            .text-pf5 { font-size: 12px; }
+
+            /* PF6 - Final */
+            #texto-secuencia-pf6 { font-size: 2.5rem; letter-spacing: 5px; }
+            .popup-pf6 { width: 95%; height: 85vh; padding: 10px; }
+            .popup-content-pf6 { flex-direction: column; overflow-y: auto; }
+            .popup-img-pf6 { width: 100%; height: 200px; flex-shrink: 0; }
+            .popup-text-pf6 { width: 100%; font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body id="stage">
@@ -541,7 +601,7 @@
                     <div class="label-oro">Cap. Chef Pirata Kamo Rincon</div>
                 </div>
                 <div class="historia-box">
-                    <p>En las sombras del Abismo de Krakatoa, bajo lunas plateadas que cortan el horizonte, sellamos el pacto más arriesgado de mi carrera. El Gromphabs, ese gigante de las mareas con un caparazón forjado en coral antiguo, emergió para reclamar su lugar. No hubo necesidad de arpones ni de sangre; solo bastó el respeto entre un pirata del sabor y el coloso de las profundidades.</p>
+                    <p>En las sombras del Abismo de Krakatoa, bajo lunas plateadas que cortan el horizonte, sellamos el pacto más arriesgado de mi career. El Gromphabs, ese gigante de las mareas con un caparazón forjado en coral antiguo, emergió para reclamar su lugar. No hubo necesidad de arpones ni de sangre; solo bastó el respeto entre un pirata del sabor y el coloso de las profundidades.</p>
                     <p>In the shadows of the Krakatoa Abyss, beneath silver moons that slice through the horizon, we sealed the riskiest pact of my career. The Gromphabs, that giant of the tides with a shell forged from ancient coral, emerged to claim its place. There was no need for harpoons or blood; respect between a pirate of flavor and the colossus of the depths was enough</p>
                     <p>地平線を切り裂く銀色の月明かりの下、クラカトア深海の影の中で、私はキャリアで最も危険な契約を結んだ。古代のサンゴで鍛えられた甲羅を持つ潮の巨人、グロムファブスが自らの居場所を主張するために現れた。銛も血も必要なかった。味の海賊と深海の巨像との間に流れる敬意だけで十分だったのだ。</p>
                     <p>En la ombroj de la Abismo de Krakatoa, sub arĝentaj lunoj kiuj tranĉas la horizonton, ni sigelis la plej riskan pakton de mia kariero. La Gromphabs, tiu tajda giganto kun kiraso elforĝita el antikva koralo, emerĝis por postuli sian lokon. Ne estis bezono de harpunoj nek sango; sufiĉis nur la respekto inter pirato de la gusto kaj la koloso de la profundoj</p>
@@ -854,7 +914,6 @@
                 document.getElementById('PF6_CONTENT').style.display = 'block';
                 PF6_Logic.start();
             },
-            /* AJUSTE TEMA 1: Detener video de PF4 al presionar BACK */
             backToS1: function(id) {
                 if(id === 'PF3_CONTENT') {
                     document.getElementById('yt-video-pf3').contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
@@ -864,7 +923,7 @@
                 }
                 if(id === 'PF4_CONTENT' && ytPlayerPF4) {
                     ytPlayerPF4.pauseVideo();
-                    ytPlayerPF4.stopVideo(); // Detención total
+                    ytPlayerPF4.stopVideo();
                 }
                 if(id === 'PF5_CONTENT' && ytPlayerPF5) {
                     ytPlayerPF5.pauseVideo();
@@ -903,7 +962,7 @@
                     { l: "HINDI", t: "रिपोर्ट PF2: एजेंट कामिस्की को मार दिया गया है। धोखा उसकी प्रेमिका लेले ने दिया था। कर्नल उरेगो ने सबूत नष्ट करने का आदेश दिया। डेटा उसकी जैविक स्मृति में बना हुआ है।" },
                     { l: "ESPERANTO", t: "RAPORTO PF2: Agento Kamisky estis senpoviĝinta. Perfido de Queen Evil LeLe post malfideleco. Kolonelo Urrego ordonis detrui la indicon. Kamisky estas la vivanta pruvo." },
                     { l: "MAYA", t: "INFORME PF2: Kamisky tu p'ataj tumen Queen Evil LeLe. Pipe Lucho tu yustaj le tarjeta'ob yéetel imanes Waldorf tumen u t'aan Urrego. Leti'e' u jaajil ti' u tuukul." },
-                    { l: "ROBOTINO", t: "01001001 01001110 01000110 01010010 01001111 00101110 00100000 01001011 01000001 01001101 01001001 01010011 01001011 01011001 00100000 01010100 01010010 01000001 01001001 01010100 01001111 01010010 00101110" }
+                    { l: "ROBOTINO", t: "01001001 01001110 01000110 01010010 01001111 00101110 00100000 01001011 01000001 01001101 01001101 01001001 01010011 01001011 01011001 00100000 01010100 01010010 01000001 01001001 01010100 01001111 01010010 00101110" }
                 ];
                 const evidencias = [
                     { i: 'epskein station.jpg', t: 'ESTACIÓN EPSKEIN', es: 'Este fue el epicentro del borrado masivo. El Ingeniero Pipe Lucho instaló bobinas magnéticas ocultas en los conductos de ventilación. Cuando el Teniente Coronel Urrego dio la orden, el pulso Waldorf vaporizó los datos de seguridad, eliminando los registros de entrada de la Reina LeLe.', en: 'The epicenter of the mass wipe. Engineer Pipe Lucho installed hidden magnetic coils in the vents. On Lieutenant Colonel Urrego\'s order, the Waldorf pulse vaporized security data, erasing Queen LeLe\'s entry logs.' },
@@ -913,7 +972,7 @@
                     { i: 'Guilian%20Arthuro%20pipe%20lucho.jpg', t: 'INGENIERO PIPE LUCHO', es: 'Un genio caído en desgracia. Lucho fue el único capaz de calibrar los imanes Waldorf para que afectaran solo el silicio y no el tejido biológico. Lo hizo bajo amenaza de muerte hacia su familia.', en: 'A disgraced genius. Lucho was the only one capable of calibrating Waldorf magnets to affect only silicon and not biological tissue. He did it under death threats.' },
                     { i: 'Teniente%20coronel%20Urrego%20el%20mas%20corrupto.jpg', t: 'TENIENTE CORONEL URREGO', es: 'El oficial más corrupto de la región y brazo ejecutor de Xi Wu. Supervisó personalmente la destrucción de los archivos en la estación. Su lealtad no es a la nación, sino al dinero del CEO.', en: 'The most corrupt officer in the region and Xi Wu\'s enforcer. He personally supervised the destruction of files at the station. His loyalty is to the CEO\'s money.' },
                     { i: 'Jhonny%20Legrant%20Acusado%20de%20robo%20de%20Imanes.jpg', t: 'CONTRABANDISTA JHONNY LEGRANT', es: 'El contrabandista que trajo los componentes Waldorf desde las colonias externas. Fue arrestado para calmar a la prensa, pero fue liberado por la puerta trasera apenas las cámaras se apagaron.', en: 'The smuggler who brought Waldorf components from the outer colonies. Arrested to calm the press, but released through the back door as soon as cameras were off.' },
-                    { i: 'Christine%20Ice%20Mcgregor%20degisladora%20Humanoide.jpg', t: 'LEGISLADORA CHRISTINE ICE', es: 'Legisladora con un secreto mortal: es un prototipo humanoide avanzado de Xi Wu. Su misión es legalizar las "limpiezas" de Urrego y asegurar que el experimento Waldorf nunca sea cuestionado judicialmente.', en: 'Legislator with a deadly secret: she is a Xi Wu advanced humanoid prototype. Her mission is to legalize Urrego\'s "cleanups" and protect the Waldorf experiment.' },
+                    { i: 'Christine%20Ice%20Mcgregor%20degisladora%20Humanoide.jpg', t: 'LEGISLADORA CHRISTINE ICE', es: 'Legisladora con un secreto mortal: es un prototipo humanoide avanzado de Xi Wu. Su misión es legalizar las \"limpiezas\" de Urrego y asegurar que el experimento Waldorf nunca sea cuestionado judicialmente.', en: 'Legislator with a deadly secret: she is a Xi Wu advanced humanoid prototype. Her mission is to legalize Urrego\'s \"cleanups\" and protect the Waldorf experiment.' },
                     { i: 'AGENTE%20KAMISKY%20WORK%20outside.jpg', t: 'ÚLTIMO OPERATIVO DE CAMPO', es: 'Esta imagen fue captada por un informante minutos antes del ataque. Kamisky llevaba consigo el disco duro original. En ese momento, no sabía que su señal de GPS estaba siendo transmitida en vivo.', en: 'Captured by an informant minutes before the attack. Kamisky was carrying the original hard drive. He didn\'t know his GPS signal was being broadcast live.' },
                     { i: 'AGENTE%20KAMISKY.jpg', t: 'EVIDENCIA BIOLÓGICA VIVA', es: 'Kamisky ya no es solo un hombre, es un archivo. El choque magnético Waldorf fusionó los datos de la tarjeta con su corteza cerebral. Mientras respire, la verdad sobre el CEO Xi Wu existe.', en: 'Kamisky is no longer just a man; he is an archive. The Waldorf magnetic shock fused the card data with his cerebral cortex. As long as he breathes, the truth exists.' }
                 ];
@@ -1123,7 +1182,7 @@
             }
         };
 
-        /* --- LÓGICA PF6 (LA ÚLTIMA PIEZA) --- */
+        /* --- LÓGICA PF6 --- */
         const PF6_Logic = {
             indice: 0,
             activa: 0,
