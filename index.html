@@ -49,7 +49,7 @@
         }
 
         .door-container { 
-            display: flex; gap: 20px; margin-bottom: 20px; margin-top: 100px; /* AJUSTE 1: Botones más abajo */
+            display: flex; gap: 20px; margin-bottom: 20px; margin-top: 145px; /* AJUSTE 1: Botones bajados 45px adicionales */
             flex-wrap: wrap; justify-content: center; 
         }
 
@@ -384,6 +384,9 @@
             margin: 0; 
             font-family: 'Courier Prime', monospace; 
             letter-spacing: 0.5px; 
+            /* AJUSTE 2: Forzado de renglón cada 32 caracteres */
+            max-width: 32ch;
+            word-wrap: break-word;
         }
 
         .video-wrapper-pf5 {
@@ -481,7 +484,7 @@
             .input-access { width: 90%; font-size: 1.2rem; }
 
             /* S1 - Puertas */
-            .door-container { gap: 10px; margin-top: 100px; } /* AJUSTE 1: Bajado para que no se salga de la pantalla */
+            .door-container { gap: 10px; margin-top: 40px; }
             .ring-door { width: 80px; height: 80px; font-size: 0.6rem; }
             .manifest-grid { grid-template-columns: repeat(2, 1fr); } /* 2 columnas en lugar de 4 */
             .robotino { grid-column: span 2; }
@@ -510,7 +513,7 @@
             #story-box-pf4 { padding: 15px; font-size: 0.8rem; }
 
             /* PF5 - Intro */
-            .dialog-box-pf5 { height: auto; min-height: 120px; } /* AJUSTE 2: Auto para que el texto no se salga */
+            .dialog-box-pf5 { height: 160px; }
             .text-pf5 { font-size: 12px; }
 
             /* PF6 - Final */
@@ -562,7 +565,7 @@
         </div>
         <div class="manifest-grid">
             <div class="lang-block"><strong>English</strong>Carved guama in woodwork, / zapote in the mind. I flee from the identical, / carving my own design. I sin wildly, / far from the crowd’s beat. What the eye fails to see, / is my greatest feat.</div>
-            <div class="lang-block"><strong>Русский</strong>Резная гуама в дереве, / саποτα в памяти моей. Бегу от одинаковых, / гравируя путь среди тенεй. Грешу безумно я, / вдали от толп людских. Что глаз не видит здесь, / в масштабах сил моих.</div>
+            <div class="lang-block"><strong>Русский</strong>Резная гуама в дереве, / саποта в памяти моей. Бегу от одинаковых, / гравируя путь среди тенεй. Грешу безумно я, / вдали от толп людских. Что глаз не видит здесь, / в масштабах сил моих.</div>
             <div class="lang-block"><strong>中文</strong>木艺中刻下荚果，/ 記憶裡存著大膠果。逃離平庸的一致，/ 雕琢自我的史詩。瘋狂地放縱罪孽，/ 遠離喧囂的人群。肉眼難見的隱秘，/ 是我最偉大的量級.</div>
             <div class="lang-block"><strong>Nederlands</strong>Gesneden guama in hout, / zapote in de geest. Ik vlucht voor het gelijke, / als een scheppend beest. Ik zondig krankzinnig, / ver van de menigte vandaan. Wat het ojo niet ziet, / is mijn ware bestaan.</div>
             <div class="lang-block"><strong>Ελληνικά</strong>Γουάμα σκαλισμένη στο ξύλο, / ζαπότε στη μνήμη. Φεύγω από το όμοιο, / σκαλίζοντας τη δική μου φήμη. Αμαρτάνω τρελά, / μακριά από το πλήθος το βουβό. Ό,τι το μάτι δεν βλέπει, / είναι το μέγεθος το τρανó.</div>
