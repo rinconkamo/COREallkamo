@@ -481,7 +481,7 @@
             .input-access { width: 90%; font-size: 1.2rem; }
 
             /* S1 - Puertas */
-            .door-container { gap: 10px; margin-top: 40px; }
+            .door-container { gap: 10px; margin-top: 100px; } /* AJUSTE 1: Bajado para que no se salga de la pantalla */
             .ring-door { width: 80px; height: 80px; font-size: 0.6rem; }
             .manifest-grid { grid-template-columns: repeat(2, 1fr); } /* 2 columnas en lugar de 4 */
             .robotino { grid-column: span 2; }
@@ -510,7 +510,7 @@
             #story-box-pf4 { padding: 15px; font-size: 0.8rem; }
 
             /* PF5 - Intro */
-            .dialog-box-pf5 { height: 160px; }
+            .dialog-box-pf5 { height: auto; min-height: 120px; } /* AJUSTE 2: Auto para que el texto no se salga */
             .text-pf5 { font-size: 12px; }
 
             /* PF6 - Final */
