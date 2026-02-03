@@ -49,7 +49,7 @@
         }
 
         .door-container { 
-            display: flex; gap: 20px; margin-bottom: 20px; margin-top: 145px; /* AJUSTE 1: Botones bajados 45px adicionales */
+            display: flex; gap: 20px; margin-bottom: 20px; margin-top: 369px; /* AJUSTE 1: Botones bajados 369px */
             flex-wrap: wrap; justify-content: center; 
         }
 
@@ -384,9 +384,6 @@
             margin: 0; 
             font-family: 'Courier Prime', monospace; 
             letter-spacing: 0.5px; 
-            /* AJUSTE 2: Forzado de renglón cada 32 caracteres */
-            max-width: 32ch;
-            word-wrap: break-word;
         }
 
         .video-wrapper-pf5 {
@@ -484,7 +481,7 @@
             .input-access { width: 90%; font-size: 1.2rem; }
 
             /* S1 - Puertas */
-            .door-container { gap: 10px; margin-top: 40px; }
+            .door-container { gap: 10px; margin-top: 369px; /* Mantenemos el ajuste de 369px solicitado */ }
             .ring-door { width: 80px; height: 80px; font-size: 0.6rem; }
             .manifest-grid { grid-template-columns: repeat(2, 1fr); } /* 2 columnas en lugar de 4 */
             .robotino { grid-column: span 2; }
@@ -565,14 +562,14 @@
         </div>
         <div class="manifest-grid">
             <div class="lang-block"><strong>English</strong>Carved guama in woodwork, / zapote in the mind. I flee from the identical, / carving my own design. I sin wildly, / far from the crowd’s beat. What the eye fails to see, / is my greatest feat.</div>
-            <div class="lang-block"><strong>Русский</strong>Резная гуама в дереве, / саποта в памяти моей. Бегу от одинаковых, / гравируя путь среди тенεй. Грешу безумно я, / вдали от толп людских. Что глаз не видит здесь, / в масштабах сил моих.</div>
+            <div class="lang-block"><strong>Русский</strong>Резная гуама в дереве, / саποτα в памяти моей. Бегу от одинаковых, / гравируя путь среди тенεй. Грешу безумно я, / вдали от толп людских. Что глаз не видит здесь, / в масштабах сил моих.</div>
             <div class="lang-block"><strong>中文</strong>木艺中刻下荚果，/ 記憶裡存著大膠果。逃離平庸的一致，/ 雕琢自我的史詩。瘋狂地放縱罪孽，/ 遠離喧囂的人群。肉眼難見的隱秘，/ 是我最偉大的量級.</div>
             <div class="lang-block"><strong>Nederlands</strong>Gesneden guama in hout, / zapote in de geest. Ik vlucht voor het gelijke, / als een scheppend beest. Ik zondig krankzinnig, / ver van de menigte vandaan. Wat het ojo niet ziet, / is mijn ware bestaan.</div>
             <div class="lang-block"><strong>Ελληνικά</strong>Γουάμα σκαλισμένη στο ξύλο, / ζαπότε στη μνήμη. Φεύγω από το όμοιο, / σκαλίζοντας τη δική μου φήμη. Αμαρτάνω τρελά, / μακριά από το πλήθος το βουβό. Ό,τι το μάτι δεν βλέπει, / είναι το μέγεθος το τρανó.</div>
             <div class="lang-block"><strong>Español</strong>Talle una guama en ebanistería, / zapote en la memoria. Huyo de lo que es igual, / tallando mi propia historia. Peco a lo loco, / lejos de la multitud. Lo que el ojo no percibe, / es mi mayor magnitud.</div>
             <div class="lang-block"><strong>Italiano</strong>Guama scolpita nel legno, / zapote nella mente. Fuggo dall’identico, / intagliando la mia historia presente. Pecco alla follia, / lontano dalla moltitudine. Ciò que l'occhio non vede, / è la mia vera latitudine.</div>
             <div class="lang-block"><strong>Maayat'aan</strong>Juch'bil guama ich che', / zapote ich k'aajal. Kin puts'ul ti' le keetilo', / in juch'ik in kuxtal. Kin k'ebantaj j-t'uubul, / náach ti' u ya'abil máak. Le ba'ax ma' u yilik icho', / leti' in nojbe'enil.</div>
-            <div class="lang-block"><strong>日本語</strong>木工に刻むグアマ、/ 記憶の中 del サポテ。同じものを逃れ、/ 自らの歴史を彫る。狂ったように罪を犯し、/ 群衆から遠く離れて。目に映らぬものこそ、/ 私の最大の真価。</div>
+            <div class="lang-block"><strong>日本語</strong>木工に刻むグアマ, / 記憶の中 del サポテ。同じものを逃れ、/ 自らの歴史を彫る。狂ったように罪を犯し、/ 群衆から遠く離れて。目に映らぬものこそ、/ 私の最大の真価。</div>
             <div class="lang-block"><strong>Deutsch</strong>Geschnitzte Guama im Holz, / Zapote im Gedächtnis. Ich fliehe vor dem Gleichen, / schnitze mein Vermächtnis. Ich sündige verrückt, / fernab der Menschenmenge. Was das Auge nicht erfasst, / ist meine wahre Länge.</div>
             <div class="lang-block"><strong>Português</strong>Talhei guama em marcenaria, / zapote na memória. Fujo do que é igual, / talhando a miña historia. Peco à loucura, / longe da multitudão. O que o ojo não percebe, / é miña mayor amplidão.</div>
             <div class="lang-block"><strong>Français</strong>Guama sculptée dans le bois, / zapote en mémoire. Je fuis la ressemblance, / sculptant ma propre historia. Je pèche à la folie, / loin de la multitude. Ce que l'œil ne voit pas, / fait ma propre amplitude.</div>
@@ -1149,6 +1146,17 @@
                 document.getElementById('story-screen-pf5').classList.add('active-pf5');
                 this.updateFrame();
             },
+            // AJUSTE 2: Función para insertar saltos de línea cada 16 caracteres
+            formatText: function(text) {
+                let formatted = "";
+                for (let i = 0; i < text.length; i++) {
+                    formatted += text[i];
+                    if ((i + 1) % 16 === 0 && i !== text.length - 1) {
+                        formatted += "<br>";
+                    }
+                }
+                return formatted;
+            },
             updateFrame: function() {
                 const frame = this.storyFrames[this.currentFrame];
                 document.getElementById('scene-image-pf5').src = frame.img;
@@ -1157,10 +1165,19 @@
 
                 let i = 0;
                 const textElement = document.getElementById('dialog-text-pf5');
-                textElement.innerText = "";
+                textElement.innerHTML = ""; // Cambiado a innerHTML para soportar <br>
+                
+                // Aplicamos el formato de 16 caracteres al texto original del frame
+                const finalText = this.formatText(frame.text);
+                
+                // La animación se basa en el texto formateado (incluyendo los tags <br>)
+                // Para que la animación se vea fluida con <br>, procesamos carácter por carácter
+                let tempText = "";
                 const timer = setInterval(() => {
                     if (i < frame.text.length) {
-                        textElement.innerText += frame.text.charAt(i);
+                        tempText += frame.text.charAt(i);
+                        // Re-formateamos el texto parcial para que los saltos aparezcan según progresa
+                        textElement.innerHTML = this.formatText(tempText);
                         i++;
                     } else {
                         clearInterval(timer);
@@ -1200,7 +1217,7 @@
             contenidos: [
                 { 
                     img: 'PF6 FILES/laprida.JPG', 
-                    txt: `El asfalto de Microcentro no perdona,\nes un espejo negro que devuelve el calor de enero,\nmientras las enciclopedias pesan en el brazo\ncomo tomos de una historia que a nadie le interesa leer.\n2011 fue un pasillo largo y sin aire.\nCaminar por Florida esquivando el rastro del bachero,\nese vapor de platos sucios que se pega a la piel\ny que juraste, entre dientes, no volver a respirar.\nPero el hambre no sabe de promesas.\nY en la esquina, el traje multicolor se vuelve armadura:\nla nariz roja, el maquillaje que el sudor agrieta,\ny esa sonrisa pintada que es, en realidad, un grito.\nThe Sun Amy Son.\nHijo del sol y del asfalto,\ncantándole al cielo blanco de Buenos Aires,\ndonde el payaso de restaurante guarda el secreto\nde quien vende alegría para comprarse el mañana.`
+                    txt: `El asfalto de Microcentro no perdona,\nes un espejo negro que devuelve el calor de enero,\nmientras las enciclopedias pesan en el brazo\ncomo tomos de una historia que a nadie le interesa leer.\n2011 fue un pasillo largo y sin aire.\nCaminar por Florida esquivando el rastro del bachero,\nese vapor de platos sucios que se pega a la piel\ny que juraste, entre dientes, no volver a respirar.\nBut hunger knows no promises.\nAnd on the corner, the multicolored suit becomes armor:\nthe red nose, the makeup that sweat cracks,\nand that painted smile which is, in reality, a scream.\nThe Sun Amy Son.\nHijo del sol y del asfalto,\ncantándole al cielo blanco de Buenos Aires,\ndonde el payaso de restaurante guarda el secreto\nde quien vende alegría para comprarse el mañana.`
                 },
                 {
                     img: 'PF6 FILES/arbol.JPG',
