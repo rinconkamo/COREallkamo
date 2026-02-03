@@ -24,10 +24,11 @@
             z-index: 1000; background-size: 100% 2px; pointer-events: none;
         }
 
+        /* AJUSTE: Cambiado center por flex-start para permitir scroll natural en móvil */
         .module { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            display: none; justify-content: center; align-items: center; 
-            flex-direction: column; z-index: 10;
+            display: none; justify-content: flex-start; align-items: center; 
+            flex-direction: column; z-index: 10; padding-top: 20px;
         }
         .v { display: flex !important; }
 
@@ -49,7 +50,7 @@
         }
 
         .door-container { 
-            display: flex; gap: 20px; margin-bottom: 20px; margin-top: 369px; /* AJUSTE 1: Botones bajados 369px */
+            display: flex; gap: 20px; margin-bottom: 20px; margin-top: 100px; 
             flex-wrap: wrap; justify-content: center; 
         }
 
@@ -91,7 +92,6 @@
         .item-botin img { width: 100%; height: 180px; object-fit: cover; display: block; }
         .item-botin:hover { transform: scale(1.7); z-index: 500; }
         
-        /* AJUSTE PF1: Cambio de posicion para no perder contenido del popup */
         .popup-info { 
             position: absolute; bottom: 0%; left: 50%; transform: translate(-50%, 0%); 
             width: 240px; background: rgba(0, 18, 25, 0.98); color: var(--gold); padding: 15px; 
@@ -179,7 +179,7 @@
         .red { color: #ff4444; }
         .green { color: #44ff44; }
         .ui-dig { 
-            text-align: center; z-index: 15; position: absolute; /* AJUSTE 3: Centro pantalla */
+            text-align: center; z-index: 15; position: absolute; 
             top: 50%; left: 50%; transform: translate(-50%, -50%); 
         }
         #dig-text { font-size: 5rem; letter-spacing: 20px; cursor: pointer; transition: transform 0.1s; display: block; text-shadow: 0 0 20px #fff; }
@@ -481,7 +481,8 @@
             .input-access { width: 90%; font-size: 1.2rem; }
 
             /* S1 - Puertas */
-            .door-container { gap: 10px; margin-top: 369px; /* Mantenemos el ajuste de 369px solicitado */ }
+            /* AJUSTE PARA MÓVIL: Reducción de margen para que los botones suban a vista */
+            .door-container { gap: 10px; margin-top: 20px; } 
             .ring-door { width: 80px; height: 80px; font-size: 0.6rem; }
             .manifest-grid { grid-template-columns: repeat(2, 1fr); } /* 2 columnas en lugar de 4 */
             .robotino { grid-column: span 2; }
@@ -955,7 +956,7 @@
                     { l: "日本語", t: "報告書PF2：カミスキー捜査官は無力化されました。裏切りは愛人のクイーン・イービル・レレによって実行され、彼女は浮気相手に彼の居場所を漏らしました。軍のウレゴ大佐は、パイプ・ルチョにデジタル証拠の全廃棄を命じ、ワルドルフ磁石で消去しました。カミスキーは処刑を待っていますが、データは彼の生物学的記憶に残っており、彼自身が生きている証拠です。" },
                     { l: "中文", t: "报告 PF2：卡米斯基探员已被制服。背叛是由他的情人 Queen Evil LeLe 实施的。腐败的 Urrego 上校命令 Pipe Lucho 销毁所有数字证据。Pipe Lucho 使用瓦尔多夫级磁铁删除了 Epskein 站的所有卡片。CEO Xi Wu 资助了法律上的沉默。卡米斯基正在等待处决，但他就是活生生的证据：数据保留在他的生物记忆中。" },
                     { l: "РУССКИЙ", t: "ОТЧЕТ PF2: Агент Камиский нейтрализован. Предательство совершено его любовницей ЛеЛе. Полковник Уррего приказал уничтожить все улики. Пайп Лучо стер данные магнитами Вальдорф. Си У финансировал молчание. Камиский ждет казни, но он — живое доказательство: данные в его биологической памяти." },
-                    { l: "FRANÇAIS", t: "RAPPORT PF2: L'agent Kamisky a été neutralisé. La trahison a été exécutée par sa maîtresse, Queen Evil LeLe. Le colonel Urrego a ordonné à Pipe Lucho de détruire les preuves. Le PDG Xi Wu a financé le silence. Kamisky attend son exécution, pero il est la preuve vivante: les données restent dans sa mémoire biologique." },
+                    { l: "FRANÇAIS", t: "RAPPORT PF2: L'agent Kamisky a été neutralisé. La trahison a été ejecutée par sa maîtresse, Queen Evil LeLe. Le colonel Urrego a ordonné à Pipe Lucho de détruire les preuves. Le PDG Xi Wu a financé le silence. Kamisky attend son exécution, pero il est la preuve vivante: les données restent dans sa mémoire biologique." },
                     { l: "PORTUGUÊS", t: "RELATÓRIO PF2: Agente Kamisky neutralizado. Traição de Queen Evil LeLe. Coronel Urrego ordenou a destruição das provas con ímãs Waldorf. Xi Wu financiou o silêncio legal. Kamisky espera ejecución; os datos vivem na sua memória biológica." },
                     { l: "NEDERLANDS", t: "RAPPORT PF2: Agent Kamisky geneutraliseerd door verraad van Queen Evil LeLe. Kolonel Urrego beval het wissen van bewijs con Waldorf-magneten. Kamisky is het levende bewijs: data zit in zijn geheugen." },
                     { l: "POLSKI", t: "RAPORT PF2: Agent Kamisky zneutralizowany. Zdrada Queen Evil LeLe. Pułkownik Urrego nakazał zniszczenie dowodów magnesami Waldorf. Dane pozostają w pamięci biologicznej Kamiskiego." },
@@ -1146,17 +1147,6 @@
                 document.getElementById('story-screen-pf5').classList.add('active-pf5');
                 this.updateFrame();
             },
-            // AJUSTE 2: Función para insertar saltos de línea cada 16 caracteres
-            formatText: function(text) {
-                let formatted = "";
-                for (let i = 0; i < text.length; i++) {
-                    formatted += text[i];
-                    if ((i + 1) % 16 === 0 && i !== text.length - 1) {
-                        formatted += "<br>";
-                    }
-                }
-                return formatted;
-            },
             updateFrame: function() {
                 const frame = this.storyFrames[this.currentFrame];
                 document.getElementById('scene-image-pf5').src = frame.img;
@@ -1165,19 +1155,10 @@
 
                 let i = 0;
                 const textElement = document.getElementById('dialog-text-pf5');
-                textElement.innerHTML = ""; // Cambiado a innerHTML para soportar <br>
-                
-                // Aplicamos el formato de 16 caracteres al texto original del frame
-                const finalText = this.formatText(frame.text);
-                
-                // La animación se basa en el texto formateado (incluyendo los tags <br>)
-                // Para que la animación se vea fluida con <br>, procesamos carácter por carácter
-                let tempText = "";
+                textElement.innerText = "";
                 const timer = setInterval(() => {
                     if (i < frame.text.length) {
-                        tempText += frame.text.charAt(i);
-                        // Re-formateamos el texto parcial para que los saltos aparezcan según progresa
-                        textElement.innerHTML = this.formatText(tempText);
+                        textElement.innerText += frame.text.charAt(i);
                         i++;
                     } else {
                         clearInterval(timer);
@@ -1217,7 +1198,7 @@
             contenidos: [
                 { 
                     img: 'PF6 FILES/laprida.JPG', 
-                    txt: `El asfalto de Microcentro no perdona,\nes un espejo negro que devuelve el calor de enero,\nmientras las enciclopedias pesan en el brazo\ncomo tomos de una historia que a nadie le interesa leer.\n2011 fue un pasillo largo y sin aire.\nCaminar por Florida esquivando el rastro del bachero,\nese vapor de platos sucios que se pega a la piel\ny que juraste, entre dientes, no volver a respirar.\nBut hunger knows no promises.\nAnd on the corner, the multicolored suit becomes armor:\nthe red nose, the makeup that sweat cracks,\nand that painted smile which is, in reality, a scream.\nThe Sun Amy Son.\nHijo del sol y del asfalto,\ncantándole al cielo blanco de Buenos Aires,\ndonde el payaso de restaurante guarda el secreto\nde quien vende alegría para comprarse el mañana.`
+                    txt: `El asfalto de Microcentro no perdona,\nes un espejo negro que devuelve el calor de enero,\nmientras las enciclopedias pesan en el brazo\ncomo tomos de una historia que a nadie le interesa leer.\n2011 fue un pasillo largo y sin aire.\nCaminar por Florida esquivando el rastro del bachero,\nese vapor de platos sucios que se pega a la piel\ny que juraste, entre dientes, no volver a respirar.\nPero el hambre no sabe de promesas.\nY en la esquina, el traje multicolor se vuelve armadura:\nla nariz roja, el maquillaje que el sudor agrieta,\ny esa sonrisa pintada que es, en realidad, un grito.\nThe Sun Amy Son.\nHijo del sol y del asfalto,\ncantándole al cielo blanco de Buenos Aires,\ndonde el payaso de restaurante guarda el secreto\nde quien vende alegría para comprarse el mañana.`
                 },
                 {
                     img: 'PF6 FILES/arbol.JPG',
