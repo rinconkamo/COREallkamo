@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <title>Modular Core - Stable Manifest [FULL INTEGRATION PF1-PF6]</title>
+    
     <style>
         /* --- ESTILOS ORIGINALES CORE + PF1 --- */
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
@@ -471,8 +472,21 @@
         .close-btn-pf6 { position: absolute; top: 10px; right: 20px; cursor: pointer; font-size: 2rem; color: #D9C5B2; }
 
         #btn-back-pf6 { position: fixed; top: 20px; left: 20px; z-index: 10002; background: rgba(0, 0, 0, 0.6); color: #D9C5B2; border: 1px solid #D9C5B2; padding: 10px 15px; cursor: pointer; font-family: 'Courier Prime'; }
-
-        /* --- AJUSTES RESPONSIVE (CELULARES Y TABLETS) --- */
+/* --- PEGA ESTO AQUÍ (PROTECCIÓN PARA PF3 EN MÓVIL) --- */
+        @media (max-width: 768px) {
+            #story-paper {
+                width: 90% !important;
+                padding: 25px !important;
+                font-size: 0.85rem !important;
+                max-height: 75vh !important;
+                overflow-y: auto !important;
+                top: 50% !important;
+            }
+            .verses {
+                font-size: 0.8rem !important;
+                margin: 10px 0 !important;
+            }
+        }/* --- AJUSTES RESPONSIVE (CELULARES Y TABLETS) --- */
         @media (max-width: 768px) {
             /* Timer y Grilla A1 */
             #timer-a1 { font-size: 3rem; }
@@ -602,7 +616,7 @@
                     <div class="label-oro">Cap. Chef Pirata Kamo Rincon</div>
                 </div>
                 <div class="historia-box">
-                    <p>En las sombras del Abismo de Krakatoa, bajo lunas plateadas que cortan el horizonte, sellamos el pacto más arriesgado de mi career. El Gromphabs, ese gigante de las mareas con un caparazón forjado en coral antiguo, emergió para reclamar su lugar. No hubo necesidad de arpones ni de sangre; solo bastó el respeto entre un pirata del sabor y el coloso de las profundidades.</p>
+                    <p>En las sombras del Abismo de Krakatoa, bajo lunas plateadas que cortan el horizonte, sellamos el pacto más arriesgado de mi carera. El Gromphabs, ese gigante de las mareas con un caparazón forjado en coral antiguo, emergió para reclamar su lugar. No hubo necesidad de arpones ni de sangre; solo bastó el respeto entre un pirata del sabor y el coloso de las profundidades.</p>
                     <p>In the shadows of the Krakatoa Abyss, beneath silver moons that slice through the horizon, we sealed the riskiest pact of my career. The Gromphabs, that giant of the tides with a shell forged from ancient coral, emerged to claim its place. There was no need for harpoons or blood; respect between a pirate of flavor and the colossus of the depths was enough</p>
                     <p>地平線を切り裂く銀色の月明かりの下、クラカトア深海の影の中で、私はキャリアで最も危険な契約を結んだ。古代のサンゴで鍛えられた甲羅を持つ潮の巨人、グロムファブスが自らの居場所を主張するために現れた。銛も血も必要なかった。味の海賊と深海の巨像との間に流れる敬意だけで十分だったのだ。</p>
                     <p>En la ombroj de la Abismo de Krakatoa, sub arĝentaj lunoj kiuj tranĉas la horizonton, ni sigelis la plej riskan pakton de mia kariero. La Gromphabs, tiu tajda giganto kun kiraso elforĝita el antikva koralo, emerĝis por postuli sian lokon. Ne estis bezono de harpunoj nek sango; sufiĉis nur la respekto inter pirato de la gusto kaj la koloso de la profundoj</p>
@@ -1016,40 +1030,59 @@
         };
 
         /* --- LÓGICA PF3 --- */
-        let pf3_progress = 0;
-        let pf3_unlocked = false;
-        let pf3_finished = false;
-        const PF3_Init = () => {
-            const digBtn = document.getElementById('dig-text');
-            const fill = document.getElementById('fill');
-            const uiInit = document.getElementById('ui-init');
-            const paper = document.getElementById('story-paper');
-            const videoCont = document.getElementById('video-container');
-            const flash = document.getElementById('flash');
-            const sfxDig = document.getElementById('sfx-dig');
-            const sfxShot = document.getElementById('sfx-shot');
-            digBtn.addEventListener('mousedown', () => { if(pf3_finished) return; pf3_unlocked = true; digBtn.innerText = "SCRUB"; });
-            digBtn.addEventListener('mousemove', () => {
-                if (pf3_unlocked && pf3_progress < 100) {
-                    pf3_progress += 1.6;
-                    fill.style.width = pf3_progress + "%";
-                    digBtn.classList.add('shaking');
-                    sfxDig.volume = 0.8; if(sfxDig.paused) sfxDig.play();
-                    clearTimeout(window.t_pf3);
-                    window.t_pf3 = setTimeout(() => { digBtn.classList.remove('shaking'); sfxDig.pause(); }, 80);
-                    if (pf3_progress >= 100) { uiInit.style.display = 'none'; paper.style.opacity = "1"; paper.style.pointerEvents = "all"; document.body.style.cursor = "crosshair"; }
-                }
-            });
-            window.addEventListener('mousedown', () => {
-                if (paper.style.opacity === "1" && !pf3_finished && document.getElementById('PF3_CONTENT').style.display === 'flex') {
-                    pf3_finished = true; sfxShot.volume = 1.0; sfxShot.play();
-                    flash.style.opacity = "1"; setTimeout(() => { flash.style.opacity = "0"; }, 150);
-                    paper.style.opacity = "0"; document.getElementById('ticker').style.display = "none";
-                    videoCont.classList.add('up');
-                    setTimeout(() => { document.getElementById('yt-video-pf3').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*'); }, 1000);
-                }
-            });
-        };
+       let pf3_progress = 0;
+let pf3_unlocked = false;
+let pf3_finished = false;
+let pf3_can_shoot = false; // Nuevo: Seguro de disparo
+
+const PF3_Init = () => {
+    const digBtn = document.getElementById('dig-text');
+    const fill = document.getElementById('fill');
+    const uiInit = document.getElementById('ui-init');
+    const paper = document.getElementById('story-paper');
+    const videoCont = document.getElementById('video-container');
+    const flash = document.getElementById('flash');
+    const sfxDig = document.getElementById('sfx-dig');
+    const sfxShot = document.getElementById('sfx-shot');
+
+    digBtn.addEventListener('mousedown', () => { if(pf3_finished) return; pf3_unlocked = true; digBtn.innerText = "SCRUB"; });
+    
+    digBtn.addEventListener('mousemove', () => {
+        if (pf3_unlocked && pf3_progress < 100) {
+            pf3_progress += 1.6;
+            fill.style.width = pf3_progress + "%";
+            digBtn.classList.add('shaking');
+            sfxDig.volume = 0.8; if(sfxDig.paused) sfxDig.play();
+            clearTimeout(window.t_pf3);
+            window.t_pf3 = setTimeout(() => { digBtn.classList.remove('shaking'); sfxDig.pause(); }, 80);
+            
+            if (pf3_progress >= 100) { 
+                uiInit.style.display = 'none'; 
+                paper.style.opacity = "1"; 
+                paper.style.pointerEvents = "all"; 
+                document.body.style.cursor = "crosshair";
+                
+                // ACTIVAR SEGURO: El usuario no puede disparar hasta después de 1.5 segundos de ver el papel
+                setTimeout(() => { pf3_can_shoot = true; }, 1500); 
+            }
+        }
+    });
+
+    window.addEventListener('mousedown', () => {
+        // Solo permite el disparo si el papel es visible, no ha terminado Y el seguro está quitado
+        if (paper.style.opacity === "1" && !pf3_finished && pf3_can_shoot && document.getElementById('PF3_CONTENT').style.display === 'flex') {
+            pf3_finished = true; 
+            sfxShot.volume = 1.0; 
+            sfxShot.play();
+            flash.style.opacity = "1"; 
+            setTimeout(() => { flash.style.opacity = "0"; }, 150);
+            paper.style.opacity = "0"; 
+            document.getElementById('ticker').style.display = "none";
+            videoCont.classList.add('up');
+            setTimeout(() => { document.getElementById('yt-video-pf3').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*'); }, 1000);
+        }
+    });
+};
 
         /* --- LÓGICA PF4 --- */
         const PF4_Logic = {
